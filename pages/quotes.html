@@ -1,164 +1,316 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kotak Surat Virtual — Ruang Perempuan</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="../style.css" />
-</head>
-<body>
-
-<audio id="bg-music" preload="none">
-  <source src="../assets/music.mp3" type="audio/mpeg" />
-</audio>
-<div id="loading-screen">
-  <div id="lottie-container" style="width:180px;height:180px;"></div>
-  <p>membuka kotak suratmu…</p>
-</div>
-<button id="music-btn" title="Toggle musik"><span class="material-icons-round">music_note</span></button>
-<div id="toast"></div>
-
-<nav class="navbar">
-  <a href="../index.html" class="navbar-brand">Ruang Perempuan</a>
-  <ul class="navbar-links">
-    <li><a href="../index.html"><span class="material-icons-round">home</span> Beranda</a></li>
-    <li><a href="letters.html" class="active"><span class="material-icons-round">mail</span> Kotak Surat</a></li>
-    <li><a href="quotes.html"><span class="material-icons-round">format_quote</span> Sastra</a></li>
-    <li><a href="recommendations.html"><span class="material-icons-round">star</span> Rekomendasi</a></li>
-    <li><a href="future-letter.html"><span class="material-icons-round">send</span> Surat Masa Depan</a></li>
-  </ul>
-  <button class="hamburger" id="hamburger-btn"><span class="material-icons-round">menu</span></button>
-</nav>
-<nav class="nav-mobile" id="mobile-nav">
-  <a href="../index.html"><span class="material-icons-round">home</span> Beranda</a>
-  <a href="letters.html"><span class="material-icons-round">mail</span> Kotak Surat</a>
-  <a href="quotes.html"><span class="material-icons-round">format_quote</span> Sastra</a>
-  <a href="recommendations.html"><span class="material-icons-round">star</span> Rekomendasi</a>
-  <a href="future-letter.html"><span class="material-icons-round">send</span> Surat Masa Depan</a>
-</nav>
-
-<!-- PAGE HEADER -->
-<div style="min-height:280px;background:linear-gradient(160deg,var(--pink-light) 0%,var(--cream) 100%);display:flex;align-items:center;padding:6rem 2rem 3rem;">
-  <div style="max-width:600px;margin:0 auto;text-align:center;">
-    <p class="section-eyebrow fade-in">The Virtual Flower Box</p>
-    <h1 class="section-title fade-in fade-in-delay" style="font-size:clamp(1.8rem,4vw,3rem);">
-      Kotak Surat <em>Virtualmu</em>
-    </h1>
-    <p class="section-subtitle fade-in fade-in-delay-2">
-      Klik kotak yang sesuai dengan apa yang kamu rasakan hari ini. Ada pesan yang menunggu untukmu.
-    </p>
-  </div>
-</div>
-
-<!-- LETTER BOXES -->
-<div class="section">
-  <div class="letter-grid">
-
-    <div class="letter-box fade-in" id="lelah" onclick="openLetterModal('lelah')">
-      <span class="material-icons-round">bedtime</span>
-      <h3>Buka saat kamu merasa lelah</h3>
-      <p>Untuk harimu yang sangat berat. Kamu sudah luar biasa berjuang sampai di sini.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kotak Surat Virtual — Ruang Perempuan</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <audio id="bg-music" preload="auto" autoplay playsinline>
+      <source
+        src="../assets/Nadin Amizah - Semua Aku Dirayakan.mp3"
+        type="audio/mpeg"
+      />
+    </audio>
+    <div id="loading-screen">
+      <div id="lottie-container" style="width: 180px; height: 180px"></div>
+      <p>membuka kotak suratmu…</p>
     </div>
-
-    <div class="letter-box fade-in fade-in-delay" id="ragu" onclick="openLetterModal('ragu')">
-      <span class="material-icons-round">psychology</span>
-      <h3>Buka saat kamu ragu dengan dirimu</h3>
-      <p>Untuk momen ketika kamu lupa betapa berarti dan kuatnya dirimu.</p>
-    </div>
-
-    <div class="letter-box fade-in fade-in-delay-2" id="tenang" onclick="openLetterModal('tenang')">
-      <span class="material-icons-round">spa</span>
-      <h3>Buka saat kamu butuh ketenangan</h3>
-      <p>Puisi dan kata-kata sastra Indonesia untuk menenangkan jiwa yang gelisah.</p>
-    </div>
-
-    <div class="letter-box fade-in fade-in-delay-3" id="bahagia" onclick="openLetterModal('bahagia')">
-      <span class="material-icons-round">celebration</span>
-      <h3>Buka saat kamu ingin merayakan diri</h3>
-      <p>Karena kamu layak dirayakan, bahkan tanpa alasan yang besar sekalipun.</p>
-    </div>
-
-    <div class="letter-box fade-in" id="rindu" onclick="openLetterModal('rindu')">
-      <span class="material-icons-round">favorite_border</span>
-      <h3>Buka saat kamu merasa rindu</h3>
-      <p>Kata-kata untuk malam yang terasa terlalu panjang dan terlalu sunyi.</p>
-    </div>
-
-    <div class="letter-box fade-in fade-in-delay" id="semangat" onclick="openLetterModal('semangat')">
-      <span class="material-icons-round">bolt</span>
-      <h3>Buka saat kamu butuh semangat</h3>
-      <p>Dorongan kecil yang mungkin kamu butuhkan untuk terus melangkah maju.</p>
-    </div>
-
-    <div class="letter-box fade-in fade-in-delay-2" id="gagal" onclick="openLetterModal('gagal')">
-      <span class="material-icons-round">restart_alt</span>
-      <h3>Buka saat kamu merasa gagal</h3>
-      <p>Gagal bukan akhir. Ini bagian dari caramu menuju versi dirimu yang lebih baik.</p>
-    </div>
-
-    <div class="letter-box fade-in fade-in-delay-3" id="marah" onclick="openLetterModal('marah')">
-      <span class="material-icons-round">mood_bad</span>
-      <h3>Buka saat kamu merasa marah</h3>
-      <p>Marahmu valid. Tapi ada cara yang lebih hangat untuk melepasnya.</p>
-    </div>
-
-  </div>
-</div>
-
-<!-- MODAL TEMPLATE -->
-<div class="modal-overlay" id="letter-modal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('letter-modal')">
-      <span class="material-icons-round" style="font-size:1.1rem;">close</span>
+    <button id="music-btn" title="Toggle musik">
+      <span class="material-icons-round">music_note</span>
     </button>
-    <div id="modal-icon" style="font-size:2rem;color:var(--pink-rose);margin-bottom:1rem;"></div>
-    <h2 class="modal-title" id="modal-title"></h2>
-    <p class="modal-subtitle" id="modal-subtitle"></p>
-    <div class="modal-poem" id="modal-content"></div>
+    <div id="toast"></div>
 
-    <!-- Comments -->
-    <div style="border-top:1px solid var(--pink-light);padding-top:1.25rem;margin-top:0.5rem;">
-      <p style="font-size:0.85rem;font-weight:600;color:var(--text-dark);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem;">
-        <span class="material-icons-round" style="font-size:1rem;color:var(--pink-rose);">chat_bubble_outline</span>
-        Saling menguatkan
-      </p>
-      <div id="modal-comments"></div>
-      <div style="display:flex;gap:0.75rem;margin-top:0.75rem;">
-        <input type="text" id="comment-name" placeholder="Namamu (opsional)" class="form-input" style="flex:0 0 35%;" />
-        <input type="text" id="comment-text" placeholder="Tuliskan penguatanmu…" class="form-input" style="flex:1;" />
-        <button onclick="addComment()" class="btn-primary" style="padding:0.6rem 1rem;flex-shrink:0;">
-          <span class="material-icons-round" style="font-size:1rem;">send</span>
-        </button>
+    <nav class="navbar">
+      <a href="../index.html" class="navbar-brand">Ruang Perempuan</a>
+      <ul class="navbar-links">
+        <li>
+          <a href="../index.html"
+            ><span class="material-icons-round">home</span> Beranda</a
+          >
+        </li>
+        <li>
+          <a href="letters.html" class="active"
+            ><span class="material-icons-round">mail</span> Kotak Surat</a
+          >
+        </li>
+        <li>
+          <a href="quotes.html"
+            ><span class="material-icons-round">format_quote</span> Sastra</a
+          >
+        </li>
+        <li>
+          <a href="recommendations.html"
+            ><span class="material-icons-round">star</span> Rekomendasi</a
+          >
+        </li>
+        <li>
+          <a href="future-letter.html"
+            ><span class="material-icons-round">send</span> Surat Masa Depan</a
+          >
+        </li>
+      </ul>
+      <button class="hamburger" id="hamburger-btn">
+        <span class="material-icons-round">menu</span>
+      </button>
+    </nav>
+    <nav class="nav-mobile" id="mobile-nav">
+      <a href="../index.html"
+        ><span class="material-icons-round">home</span> Beranda</a
+      >
+      <a href="letters.html"
+        ><span class="material-icons-round">mail</span> Kotak Surat</a
+      >
+      <a href="quotes.html"
+        ><span class="material-icons-round">format_quote</span> Sastra</a
+      >
+      <a href="recommendations.html"
+        ><span class="material-icons-round">star</span> Rekomendasi</a
+      >
+      <a href="future-letter.html"
+        ><span class="material-icons-round">send</span> Surat Masa Depan</a
+      >
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <div
+      style="
+        min-height: 280px;
+        background: linear-gradient(
+          160deg,
+          var(--pink-light) 0%,
+          var(--cream) 100%
+        );
+        display: flex;
+        align-items: center;
+        padding: 6rem 2rem 3rem;
+      "
+    >
+      <div style="max-width: 600px; margin: 0 auto; text-align: center">
+        <p class="section-eyebrow fade-in">The Virtual Flower Box</p>
+        <h1
+          class="section-title fade-in fade-in-delay"
+          style="font-size: clamp(1.8rem, 4vw, 3rem)"
+        >
+          Kotak Surat <em>Virtualmu</em>
+        </h1>
+        <p class="section-subtitle fade-in fade-in-delay-2">
+          Klik kotak yang sesuai dengan apa yang kamu rasakan hari ini. Ada
+          pesan yang menunggu untukmu.
+        </p>
       </div>
     </div>
-  </div>
-</div>
 
-<footer>
-  <div class="brand">Ruang Perempuan</div>
-  <p>Kamu tidak sendirian di sini.</p>
-  <nav>
-    <a href="../index.html">Beranda</a>
-    <a href="letters.html">Kotak Surat</a>
-    <a href="quotes.html">Sastra</a>
-    <a href="recommendations.html">Rekomendasi</a>
-    <a href="future-letter.html">Surat Masa Depan</a>
-  </nav>
-  <p style="opacity:0.4;font-size:0.75rem;margin-top:1rem;">© 2026 arrval_</p>
-</footer>
+    <!-- LETTER BOXES -->
+    <div class="section">
+      <div class="letter-grid">
+        <div
+          class="letter-box fade-in"
+          id="lelah"
+          onclick="openLetterModal('lelah')"
+        >
+          <span class="material-icons-round">bedtime</span>
+          <h3>Buka saat kamu merasa lelah</h3>
+          <p>
+            Untuk harimu yang sangat berat. Kamu sudah luar biasa berjuang
+            sampai di sini.
+          </p>
+        </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-<script src="../main.js"></script>
-<script>
-const letters = {
-  lelah: {
-    icon: 'bedtime',
-    title: 'Untuk kamu yang sedang lelah…',
-    subtitle: 'Pesan ini khusus untukmu yang hari ini begitu berat.',
-    content: `Hei, kamu.
+        <div
+          class="letter-box fade-in fade-in-delay"
+          id="ragu"
+          onclick="openLetterModal('ragu')"
+        >
+          <span class="material-icons-round">psychology</span>
+          <h3>Buka saat kamu ragu dengan dirimu</h3>
+          <p>Untuk momen ketika kamu lupa betapa berarti dan kuatnya dirimu.</p>
+        </div>
+
+        <div
+          class="letter-box fade-in fade-in-delay-2"
+          id="tenang"
+          onclick="openLetterModal('tenang')"
+        >
+          <span class="material-icons-round">spa</span>
+          <h3>Buka saat kamu butuh ketenangan</h3>
+          <p>
+            Puisi dan kata-kata sastra Indonesia untuk menenangkan jiwa yang
+            gelisah.
+          </p>
+        </div>
+
+        <div
+          class="letter-box fade-in fade-in-delay-3"
+          id="bahagia"
+          onclick="openLetterModal('bahagia')"
+        >
+          <span class="material-icons-round">celebration</span>
+          <h3>Buka saat kamu ingin merayakan diri</h3>
+          <p>
+            Karena kamu layak dirayakan, bahkan tanpa alasan yang besar
+            sekalipun.
+          </p>
+        </div>
+
+        <div
+          class="letter-box fade-in"
+          id="rindu"
+          onclick="openLetterModal('rindu')"
+        >
+          <span class="material-icons-round">favorite_border</span>
+          <h3>Buka saat kamu merasa rindu</h3>
+          <p>
+            Kata-kata untuk malam yang terasa terlalu panjang dan terlalu sunyi.
+          </p>
+        </div>
+
+        <div
+          class="letter-box fade-in fade-in-delay"
+          id="semangat"
+          onclick="openLetterModal('semangat')"
+        >
+          <span class="material-icons-round">bolt</span>
+          <h3>Buka saat kamu butuh semangat</h3>
+          <p>
+            Dorongan kecil yang mungkin kamu butuhkan untuk terus melangkah
+            maju.
+          </p>
+        </div>
+
+        <div
+          class="letter-box fade-in fade-in-delay-2"
+          id="gagal"
+          onclick="openLetterModal('gagal')"
+        >
+          <span class="material-icons-round">restart_alt</span>
+          <h3>Buka saat kamu merasa gagal</h3>
+          <p>
+            Gagal bukan akhir. Ini bagian dari caramu menuju versi dirimu yang
+            lebih baik.
+          </p>
+        </div>
+
+        <div
+          class="letter-box fade-in fade-in-delay-3"
+          id="marah"
+          onclick="openLetterModal('marah')"
+        >
+          <span class="material-icons-round">mood_bad</span>
+          <h3>Buka saat kamu merasa marah</h3>
+          <p>
+            Marahmu valid. Tapi ada cara yang lebih hangat untuk melepasnya.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL TEMPLATE -->
+    <div class="modal-overlay" id="letter-modal">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal('letter-modal')">
+          <span class="material-icons-round" style="font-size: 1.1rem"
+            >close</span
+          >
+        </button>
+        <div
+          id="modal-icon"
+          style="font-size: 2rem; color: var(--pink-rose); margin-bottom: 1rem"
+        ></div>
+        <h2 class="modal-title" id="modal-title"></h2>
+        <p class="modal-subtitle" id="modal-subtitle"></p>
+        <div class="modal-poem" id="modal-content"></div>
+
+        <!-- Comments -->
+        <div
+          style="
+            border-top: 1px solid var(--pink-light);
+            padding-top: 1.25rem;
+            margin-top: 0.5rem;
+          "
+        >
+          <p
+            style="
+              font-size: 0.85rem;
+              font-weight: 600;
+              color: var(--text-dark);
+              margin-bottom: 0.75rem;
+              display: flex;
+              align-items: center;
+              gap: 0.4rem;
+            "
+          >
+            <span
+              class="material-icons-round"
+              style="font-size: 1rem; color: var(--pink-rose)"
+              >chat_bubble_outline</span
+            >
+            Saling menguatkan
+          </p>
+          <div id="modal-comments"></div>
+          <div style="display: flex; gap: 0.75rem; margin-top: 0.75rem">
+            <input
+              type="text"
+              id="comment-name"
+              placeholder="Namamu (opsional)"
+              class="form-input"
+              style="flex: 0 0 35%"
+            />
+            <input
+              type="text"
+              id="comment-text"
+              placeholder="Tuliskan penguatanmu…"
+              class="form-input"
+              style="flex: 1"
+            />
+            <button
+              onclick="addComment()"
+              class="btn-primary"
+              style="padding: 0.6rem 1rem; flex-shrink: 0"
+            >
+              <span class="material-icons-round" style="font-size: 1rem"
+                >send</span
+              >
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="brand">Ruang Perempuan</div>
+      <p>Kamu tidak sendirian di sini.</p>
+      <nav>
+        <a href="../index.html">Beranda</a>
+        <a href="letters.html">Kotak Surat</a>
+        <a href="quotes.html">Sastra</a>
+        <a href="recommendations.html">Rekomendasi</a>
+        <a href="future-letter.html">Surat Masa Depan</a>
+      </nav>
+      <p style="opacity: 0.4; font-size: 0.75rem; margin-top: 1rem">
+        © 2026 arrval_
+      </p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <script src="../main.js"></script>
+    <script>
+      const letters = {
+        lelah: {
+          icon: "bedtime",
+          title: "Untuk kamu yang sedang lelah…",
+          subtitle: "Pesan ini khusus untukmu yang hari ini begitu berat.",
+          content: `Hei, kamu.
 
 Aku tahu hari ini mungkin terasa lebih berat dari biasanya.
 Mungkin kamu sudah mencoba, sudah berjuang, sudah memberi banyak —
@@ -179,12 +331,12 @@ Dan kamu akan ada di sana — lebih kuat dari yang kamu kira.
 
 Dengan sayang,
 Ruang Perempuan 🌸`,
-  },
-  ragu: {
-    icon: 'psychology',
-    title: 'Untuk kamu yang meragukan dirimu…',
-    subtitle: 'Kamu lebih dari yang kamu pikirkan.',
-    content: `Hei, kamu yang sedang ragu.
+        },
+        ragu: {
+          icon: "psychology",
+          title: "Untuk kamu yang meragukan dirimu…",
+          subtitle: "Kamu lebih dari yang kamu pikirkan.",
+          content: `Hei, kamu yang sedang ragu.
 
 Aku ingin kamu tahu —
 keraguan itu bukan tanda bahwa kamu tidak cukup baik.
@@ -209,12 +361,12 @@ Itu sudah cukup untuk memulai.
 
 Dengan hangat,
 Ruang Perempuan 🌸`,
-  },
-  tenang: {
-    icon: 'spa',
-    title: 'Untuk kamu yang butuh ketenangan…',
-    subtitle: 'Puisi untuk jiwa yang sedang gelisah.',
-    content: `Kepada dirimu yang gelisah,
+        },
+        tenang: {
+          icon: "spa",
+          title: "Untuk kamu yang butuh ketenangan…",
+          subtitle: "Puisi untuk jiwa yang sedang gelisah.",
+          content: `Kepada dirimu yang gelisah,
 
 Chairil Anwar pernah menulis:
 "Aku ingin hidup seribu tahun lagi."
@@ -241,12 +393,12 @@ Tenang adalah caramu bertahan.
 
 Dengan lembut,
 Ruang Perempuan 🌸`,
-  },
-  bahagia: {
-    icon: 'celebration',
-    title: 'Rayakan dirimu hari ini!',
-    subtitle: 'Karena kamu layak dirayakan — kapan saja.',
-    content: `Hei, kamu yang luar biasa!
+        },
+        bahagia: {
+          icon: "celebration",
+          title: "Rayakan dirimu hari ini!",
+          subtitle: "Karena kamu layak dirayakan — kapan saja.",
+          content: `Hei, kamu yang luar biasa!
 
 Tahukah kamu?
 Fakta bahwa kamu ada hari ini adalah sesuatu yang patut dirayakan.
@@ -273,12 +425,12 @@ Kamu pantas untuk bahagia.
 
 Selamat merayakan dirimu!
 Ruang Perempuan 🌸`,
-  },
-  rindu: {
-    icon: 'favorite_border',
-    title: 'Untuk kamu yang sedang merindukan…',
-    subtitle: 'Malam-malam sunyi yang terasa terlalu panjang.',
-    content: `Kepada kamu yang sedang rindu,
+        },
+        rindu: {
+          icon: "favorite_border",
+          title: "Untuk kamu yang sedang merindukan…",
+          subtitle: "Malam-malam sunyi yang terasa terlalu panjang.",
+          content: `Kepada kamu yang sedang rindu,
 
 Rindu itu berat.
 Entah pada seseorang, pada tempat,
@@ -307,12 +459,12 @@ yang selalu bisa kamu kunjungi kapan saja.
 
 Dengan hangat,
 Ruang Perempuan 🌸`,
-  },
-  semangat: {
-    icon: 'bolt',
-    title: 'Kamu bisa, sungguh!',
-    subtitle: 'Dorongan kecil untuk harimu.',
-    content: `Hei kamu!
+        },
+        semangat: {
+          icon: "bolt",
+          title: "Kamu bisa, sungguh!",
+          subtitle: "Dorongan kecil untuk harimu.",
+          content: `Hei kamu!
 
 Aku tahu kadang jalannya terasa panjang sekali.
 Tujuannya masih jauh, dan kakimu sudah mulai berat.
@@ -338,12 +490,12 @@ Percaya padaku — dan terutama, percaya pada dirimu.
 
 Ayo!
 Ruang Perempuan 🌸`,
-  },
-  gagal: {
-    icon: 'restart_alt',
-    title: 'Untuk kamu yang merasa gagal…',
-    subtitle: 'Ini bukan akhirnya.',
-    content: `Kepada kamu yang sedang kecewa,
+        },
+        gagal: {
+          icon: "restart_alt",
+          title: "Untuk kamu yang merasa gagal…",
+          subtitle: "Ini bukan akhirnya.",
+          content: `Kepada kamu yang sedang kecewa,
 
 Gagal bukan berarti kamu tidak mampu.
 Gagal artinya kamu sudah mencoba —
@@ -371,12 +523,12 @@ Sesuatu yang akan membuatmu lebih siap untuk langkah berikutnya.
 
 Aku percaya padamu.
 Ruang Perempuan 🌸`,
-  },
-  marah: {
-    icon: 'mood_bad',
-    title: 'Untuk kamu yang sedang marah…',
-    subtitle: 'Marahmu valid. Kamu berhak merasakannya.',
-    content: `Hei,
+        },
+        marah: {
+          icon: "mood_bad",
+          title: "Untuk kamu yang sedang marah…",
+          subtitle: "Marahmu valid. Kamu berhak merasakannya.",
+          content: `Hei,
 
 Marahmu valid.
 Perasaan itu nyata dan kamu berhak merasakannya.
@@ -403,64 +555,73 @@ Tapi kamu juga berhak untuk damai.
 
 Dengan pengertian,
 Ruang Perempuan 🌸`,
-  },
-};
+        },
+      };
 
-let currentLetterKey = null;
+      let currentLetterKey = null;
 
-function openLetterModal(key) {
-  const letter = letters[key];
-  if (!letter) return;
-  currentLetterKey = key;
-  document.getElementById('modal-icon').innerHTML = `<span class="material-icons-round" style="font-size:2.2rem;color:var(--pink-rose);">${letter.icon}</span>`;
-  document.getElementById('modal-title').textContent = letter.title;
-  document.getElementById('modal-subtitle').textContent = letter.subtitle;
-  document.getElementById('modal-content').textContent = letter.content;
+      function openLetterModal(key) {
+        const letter = letters[key];
+        if (!letter) return;
+        currentLetterKey = key;
+        document.getElementById("modal-icon").innerHTML =
+          `<span class="material-icons-round" style="font-size:2.2rem;color:var(--pink-rose);">${letter.icon}</span>`;
+        document.getElementById("modal-title").textContent = letter.title;
+        document.getElementById("modal-subtitle").textContent = letter.subtitle;
+        document.getElementById("modal-content").textContent = letter.content;
 
-  // Load comments
-  const comments = getStorage(`comments_${key}`, []);
-  renderComments(comments);
+        // Load comments
+        const comments = getStorage(`comments_${key}`, []);
+        renderComments(comments);
 
-  openModal('letter-modal');
-}
+        openModal("letter-modal");
+      }
 
-function renderComments(comments) {
-  const el = document.getElementById('modal-comments');
-  if (!comments.length) {
-    el.innerHTML = '<p style="font-size:0.8rem;color:var(--text-muted);font-style:italic;">Jadilah yang pertama memberikan penguatan.</p>';
-    return;
-  }
-  el.innerHTML = comments.map(c => `
+      function renderComments(comments) {
+        const el = document.getElementById("modal-comments");
+        if (!comments.length) {
+          el.innerHTML =
+            '<p style="font-size:0.8rem;color:var(--text-muted);font-style:italic;">Jadilah yang pertama memberikan penguatan.</p>';
+          return;
+        }
+        el.innerHTML = comments
+          .map(
+            (c) => `
     <div class="comment-item">
-      <div class="name">${c.name || 'Anonim'}</div>
+      <div class="name">${c.name || "Anonim"}</div>
       <div class="text">${c.text}</div>
     </div>
-  `).join('');
-}
+  `,
+          )
+          .join("");
+      }
 
-function addComment() {
-  if (!currentLetterKey) return;
-  const name = document.getElementById('comment-name').value.trim();
-  const text = document.getElementById('comment-text').value.trim();
-  if (!text) { showToast('Tuliskan sesuatu dulu ya!', 'info'); return; }
+      function addComment() {
+        if (!currentLetterKey) return;
+        const name = document.getElementById("comment-name").value.trim();
+        const text = document.getElementById("comment-text").value.trim();
+        if (!text) {
+          showToast("Tuliskan sesuatu dulu ya!", "info");
+          return;
+        }
 
-  const comments = getStorage(`comments_${currentLetterKey}`, []);
-  comments.unshift({ name: name || 'Anonim', text });
-  setStorage(`comments_${currentLetterKey}`, comments.slice(0, 50));
-  renderComments(comments);
+        const comments = getStorage(`comments_${currentLetterKey}`, []);
+        comments.unshift({ name: name || "Anonim", text });
+        setStorage(`comments_${currentLetterKey}`, comments.slice(0, 50));
+        renderComments(comments);
 
-  document.getElementById('comment-name').value = '';
-  document.getElementById('comment-text').value = '';
-  showToast('Penguatanmu sudah terkirim!', 'favorite');
-}
+        document.getElementById("comment-name").value = "";
+        document.getElementById("comment-text").value = "";
+        showToast("Penguatanmu sudah terkirim!", "favorite");
+      }
 
-// Open letter from URL hash
-window.addEventListener('load', () => {
-  const hash = window.location.hash.replace('#', '');
-  if (hash && letters[hash]) {
-    setTimeout(() => openLetterModal(hash), 500);
-  }
-});
-</script>
-</body>
+      // Open letter from URL hash
+      window.addEventListener("load", () => {
+        const hash = window.location.hash.replace("#", "");
+        if (hash && letters[hash]) {
+          setTimeout(() => openLetterModal(hash), 500);
+        }
+      });
+    </script>
+  </body>
 </html>
