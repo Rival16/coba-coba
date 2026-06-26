@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Surat untuk Masa Depan — Ruang Perempuan</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .letter-paper {
+      background: #fffdf8;
+      border: 1px solid var(--pink-light);
+      border-radius: 1.5rem;
+      padding: 2.5rem;
+      box-shadow: 0 8px 40px rgba(247,160,184,0.12);
+      position: relative;
+    }
+    .letter-paper::before {
+      content: '';
+      position: absolute;
+      left: 4rem;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--pink-light);
+      opacity: 0.6;
+    }
+    .letter-lines {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--text-dark);
+      line-height: 2.2;
+      resize: none;
+      min-height: 300px;
+      padding-left: 2rem;
+    }
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .step-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: var(--pink-light);
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .step-dot.active { background: var(--pink-deep); color: white; }
+    .step-dot.done { background: var(--pink-rose); color: white; }
+    .step-line { flex: 1; height: 1px; background: var(--pink-light); }
+    .step-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+    .delivery-option {
+      border: 2px solid var(--pink-light);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .delivery-option:hover, .delivery-option.selected {
+      border-color: var(--pink-rose);
+      background: var(--pink-light);
+    }
+    .delivery-option .material-icons-round { color: var(--pink-rose); font-size: 1.8rem; }
+    .delivery-option h4 { font-weight: 600; font-size: 0.9rem; color: var(--text-dark); }
+    .delivery-option p { font-size: 0.78rem; color: var(--text-muted); }
+    .saved-letter {
+      background: white;
+      border: 1px solid var(--pink-light);
+      border-radius: 1.25rem;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .saved-letter h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 0.25rem;
+    }
+    .saved-letter .meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .saved-letter .preview {
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .delete-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--pink-light);
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      transition: background 0.2s, color 0.2s;
+    }
+    .delete-btn:hover { background: #fee2e2; color: #ef4444; }
+    .days-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.4rem 0.9rem;
+      border: 2px solid var(--pink-light);
+      border-radius: 999px;
+      background: none;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+    }
+    .days-chip.selected {
+      border-color: var(--pink-deep);
+      background: var(--pink-light);
+      color: var(--pink-deep);
+    }
+    .progress-ring {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+    .progress-bar {
+      height: 4px;
+      border-radius: 999px;
+      background: var(--pink-light);
+      flex: 1;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--pink-rose);
+      border-radius: 999px;
+      transition: width 0.3s;
+    }
+  </style>
+</head>
+<body>
+
+<audio id="bg-music" preload="none"><source src="../assets/Nadin Amizah - Semua Aku Dirayakan.mp3" type="audio/mpeg" /></audio>
+<div id="loading-screen">
+  <div id="lottie-container" style="width:180px;height:180px;"></div>
+  <p>menyiapkan kertas suratmu…</p>
+</div>
+<button id="music-btn" title="Toggle musik"><span class="material-icons-round">music_note</span></button>
+<div id="toast"></div>
+
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand">Ruang Perempuan</a>
+  <ul class="navbar-links">
+    <li><a href="../index.html"><span class="material-icons-round">home</span> Beranda</a></li>
+    <li><a href="letters.html"><span class="material-icons-round">mail</span> Kotak Surat</a></li>
+    <li><a href="quotes.html"><span class="material-icons-round">format_quote</span> Sastra</a></li>
+    <li><a href="recommendations.html"><span class="material-icons-round">star</span> Rekomendasi</a></li>
+    <li><a href="future-letter.html" class="active"><span class="material-icons-round">send</span> Surat Masa Depan</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger-btn"><span class="material-icons-round">menu</span></button>
+</nav>
+<nav class="nav-mobile" id="mobile-nav">
+  <a href="../index.html"><span class="material-icons-round">home</span> Beranda</a>
+  <a href="letters.html"><span class="material-icons-round">mail</span> Kotak Surat</a>
+  <a href="quotes.html"><span class="material-icons-round">format_quote</span> Sastra</a>
+  <a href="recommendations.html"><span class="material-icons-round">star</span> Rekomendasi</a>
+  <a href="future-letter.html"><span class="material-icons-round">send</span> Surat Masa Depan</a>
+</nav>
+
+<!-- HEADER -->
+<div style="background:linear-gradient(160deg,var(--pink-light) 0%,var(--cream) 100%);padding:6rem 2rem 3rem;text-align:center;position:relative;overflow:hidden;">
+  <img src="../assets/cloud-decor.png" alt="" class="cloud-decor left" />
+  <img src="../assets/cloud-decor.png" alt="" class="cloud-decor right" />
+  <p class="section-eyebrow fade-in">FutureMe — Versi Perempuan</p>
+  <h1 class="section-title fade-in fade-in-delay" style="font-size:clamp(1.8rem,4vw,3rem);">
+    Surat untuk <em>dirimu di masa depan</em>
+  </h1>
+  <p class="section-subtitle fade-in fade-in-delay-2">
+    Tulis surat untuk dirimu sendiri — 3 bulan, 6 bulan, atau 1 tahun dari sekarang. Surat akan diingatkan lewat email yang kamu simpan.
+  </p>
+</div>
+
+<div class="section">
+  <div style="display:grid;grid-template-columns:1fr 380px;gap:2.5rem;align-items:start;" id="main-grid">
+
+    <!-- LEFT: FORM -->
+    <div>
+      <!-- Steps -->
+      <div class="step-indicator">
+        <div>
+          <div class="step-dot active" id="step1-dot">1</div>
+          <div class="step-label">Tulis</div>
+        </div>
+        <div class="step-line"></div>
+        <div>
+          <div class="step-dot" id="step2-dot">2</div>
+          <div class="step-label">Kirim</div>
+        </div>
+        <div class="step-line"></div>
+        <div>
+          <div class="step-dot" id="step3-dot">3</div>
+          <div class="step-label">Tunggu</div>
+        </div>
+      </div>
+
+      <!-- Step 1: Write -->
+      <div id="form-step1">
+        <div class="form-group">
+          <label class="form-label">
+            <span class="material-icons-round">drive_file_rename_outline</span>
+            Judul suratmu
+          </label>
+          <input type="text" id="letter-title" class="form-input" placeholder="misal: Untuk diriku di usia 20…" />
+        </div>
+
+        <div class="form-group" style="margin-top:1.5rem;">
+          <label class="form-label" style="margin-bottom:1rem;">
+            <span class="material-icons-round">edit_note</span>
+            Isi surat
+          </label>
+          <div class="letter-paper">
+            <div style="font-family:'Playfair Display',serif;font-style:italic;color:var(--pink-rose);font-size:0.9rem;margin-bottom:1rem;padding-left:2rem;">
+              Kepada diriku yang lebih bijak…
+            </div>
+            <textarea id="letter-body" class="letter-lines" placeholder="Hei kamu,&#10;&#10;Aku menulis ini di tanggal hari ini, dengan harapan…" rows="12"></textarea>
+          </div>
+
+          <!-- Word count -->
+          <div class="progress-ring" style="margin-top:0.75rem;">
+            <span id="word-count">0</span> kata
+            <div class="progress-bar"><div class="progress-fill" id="word-progress" style="width:0%"></div></div>
+            <span>min. 20 kata</span>
+          </div>
+        </div>
+
+        <div style="margin-top:1.75rem;">
+          <label class="form-label" style="margin-bottom:1rem;">
+            <span class="material-icons-round">event</span>
+            Kirim surat ini dalam berapa lama?
+          </label>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;" id="duration-chips">
+            <button class="days-chip" data-days="90" onclick="selectDuration(this)">3 bulan</button>
+            <button class="days-chip" data-days="180" onclick="selectDuration(this)">6 bulan</button>
+            <button class="days-chip selected" data-days="365" onclick="selectDuration(this)">1 tahun</button>
+            <button class="days-chip" data-days="730" onclick="selectDuration(this)">2 tahun</button>
+          </div>
+          <p id="delivery-date-text" style="font-size:0.8rem;color:var(--text-muted);margin-top:0.75rem;display:flex;align-items:center;gap:0.35rem;">
+            <span class="material-icons-round" style="font-size:0.9rem;">schedule_send</span>
+            Surat akan dikirim pada: <strong id="delivery-date-label">—</strong>
+          </p>
+        </div>
+
+        <button onclick="goToStep2()" class="btn-primary" style="margin-top:2rem;width:100%;justify-content:center;">
+          <span class="material-icons-round" style="font-size:1rem;">navigate_next</span>
+          Lanjutkan
+        </button>
+      </div>
+
+      <!-- Step 2: Email -->
+      <div id="form-step2" style="display:none;">
+        <button onclick="goToStep1()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:0.4rem;font-size:0.85rem;margin-bottom:1.5rem;padding:0;">
+          <span class="material-icons-round" style="font-size:1rem;">arrow_back</span> Kembali
+        </button>
+
+        <div class="form-group">
+          <label class="form-label"><span class="material-icons-round">email</span> Alamat emailmu</label>
+          <input type="email" id="letter-email" class="form-input" placeholder="emailmu@contoh.com" />
+          <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem;display:flex;align-items:center;gap:0.3rem;">
+            <span class="material-icons-round" style="font-size:0.85rem;">lock</span>
+            Email hanya digunakan untuk mengirim suratmu. Tidak akan dibagikan.
+          </p>
+        </div>
+
+        <div style="margin-top:1.5rem;">
+          <p style="font-size:0.85rem;font-weight:600;color:var(--text-dark);margin-bottom:0.75rem;">Ringkasan suratmu:</p>
+          <div style="background:var(--pink-light);border-radius:1rem;padding:1.25rem;">
+            <p style="font-size:0.85rem;color:var(--text-dark);font-weight:600;" id="summary-title">—</p>
+            <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.35rem;" id="summary-date">—</p>
+            <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.25rem;font-style:italic;" id="summary-preview">—</p>
+          </div>
+        </div>
+
+        <div style="margin-top:1.5rem;background:var(--peach);border-radius:1rem;padding:1.25rem;display:flex;gap:0.75rem;">
+          <span class="material-icons-round" style="color:var(--pink-rose);flex-shrink:0;">info</span>
+          <p style="font-size:0.8rem;color:var(--text-muted);line-height:1.6;">
+            Surat ini akan disimpan di browser-mu dan kamu akan mendapat pengingat di tanggal pengiriman. Untuk pengiriman email otomatis penuh, hubungkan dengan backend (Supabase + cron). Sekarang surat tersimpan lokal dan bisa diekspor.
+          </p>
+        </div>
+
+        <button onclick="saveLetter()" class="btn-primary" style="margin-top:1.5rem;width:100%;justify-content:center;">
+          <span class="material-icons-round" style="font-size:1rem;">send</span>
+          Simpan & Kirim Surat
+        </button>
+      </div>
+
+      <!-- Step 3: Done -->
+      <div id="form-step3" style="display:none;text-align:center;padding:3rem 0;">
+        <span class="material-icons-round" style="font-size:4rem;color:var(--pink-rose);">mark_email_read</span>
+        <h2 style="font-family:'Playfair Display',serif;font-size:1.6rem;margin:1rem 0 0.5rem;color:var(--text-dark);">
+          Suratmu sudah tersimpan!
+        </h2>
+        <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;max-width:380px;margin:0 auto 2rem;">
+          Kamu akan melihatnya di daftar surat di bawah. Saat tanggalnya tiba, buka lagi dan baca — versi dirimu sekarang sedang menunggumu.
+        </p>
+        <button onclick="resetForm()" class="btn-secondary">
+          <span class="material-icons-round" style="font-size:1rem;">add</span>
+          Tulis Surat Lagi
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT: Tips & Saved Ahmadrival12!-->
+    <div>
+      <!-- Tips -->
+      <div style="background:white;border-radius:1.5rem;padding:1.5rem;border:1px solid var(--pink-light);margin-bottom:1.5rem;">
+        <h3 style="font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:1rem;color:var(--text-dark);display:flex;align-items:center;gap:0.5rem;">
+          <span class="material-icons-round" style="color:var(--pink-rose);">lightbulb</span>
+          Ide untuk isi suratmu
+        </h3>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;">
+          <button class="rec-item" style="background:var(--cream);border-radius:0.75rem;padding:0.75rem;cursor:pointer;text-align:left;border:none;width:100%;" onclick="insertPrompt('Apa yang sedang kamu perjuangkan sekarang?')">
+            <span class="material-icons-round" style="font-size:0.9rem;color:var(--pink-rose);">arrow_forward</span>
+            <span style="font-size:0.82rem;color:var(--text-dark);">Apa yang sedang kamu perjuangkan sekarang?</span>
+          </button>
+          <button class="rec-item" style="background:var(--cream);border-radius:0.75rem;padding:0.75rem;cursor:pointer;text-align:left;border:none;width:100%;" onclick="insertPrompt('Mimpi apa yang paling kamu inginkan terwujud?')">
+            <span class="material-icons-round" style="font-size:0.9rem;color:var(--pink-rose);">arrow_forward</span>
+            <span style="font-size:0.82rem;color:var(--text-dark);">Mimpi apa yang paling kamu inginkan terwujud?</span>
+          </button>
+          <button class="rec-item" style="background:var(--cream);border-radius:0.75rem;padding:0.75rem;cursor:pointer;text-align:left;border:none;width:100%;" onclick="insertPrompt('Hal apa yang kamu harap sudah kamu lakukan lebih awal?')">
+            <span class="material-icons-round" style="font-size:0.9rem;color:var(--pink-rose);">arrow_forward</span>
+            <span style="font-size:0.82rem;color:var(--text-dark);">Hal apa yang kamu harap sudah kamu lakukan lebih awal?</span>
+          </button>
+          <button class="rec-item" style="background:var(--cream);border-radius:0.75rem;padding:0.75rem;cursor:pointer;text-align:left;border:none;width:100%;" onclick="insertPrompt('Pesan apa yang ingin kamu sampaikan ke dirimu yang lebih dewasa?')">
+            <span class="material-icons-round" style="font-size:0.9rem;color:var(--pink-rose);">arrow_forward</span>
+            <span style="font-size:0.82rem;color:var(--text-dark);">Pesan untuk dirimu yang lebih dewasa?</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Saved Letters -->
+      <div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:1rem;color:var(--text-dark);display:flex;align-items:center;gap:0.5rem;">
+          <span class="material-icons-round" style="color:var(--pink-rose);">inbox</span>
+          Surat Tersimpanmu
+        </h3>
+        <div id="saved-letters-list">
+          <p style="font-size:0.85rem;color:var(--text-muted);font-style:italic;text-align:center;padding:1.5rem 0;">
+            Belum ada surat. Tulis satu untuk dirimu!
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL: Read saved letter -->
+<div class="modal-overlay" id="read-letter-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('read-letter-modal')">
+      <span class="material-icons-round" style="font-size:1.1rem;">close</span>
+    </button>
+    <p style="font-size:0.75rem;color:var(--pink-rose);font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">Surat Masa Lalu</p>
+    <h2 class="modal-title" id="read-title"></h2>
+    <p class="modal-subtitle" id="read-meta"></p>
+    <div class="modal-poem" id="read-body"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="brand">Ruang Perempuan</div>
+  <p>Karena dirimu di masa depan layak menerima pesan dari dirimu hari ini.</p>
+  <nav>
+    <a href="../index.html">Beranda</a>
+    <a href="letters.html">Kotak Surat</a>
+    <a href="quotes.html">Sastra</a>
+    <a href="recommendations.html">Rekomendasi</a>
+    <a href="future-letter.html">Surat Masa Depan</a>
+  </nav>
+  <p style="opacity:0.4;font-size:0.75rem;margin-top:1rem;">© 2026 arrval_ </p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<script src="../js/main.js"></script>
+<script>
+const SUPABASE_URL = 'https://mfpsxmrnimqznnuoqpgy.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mcHN4bXJuaW1xem5udW9xcGd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NzYxOTUsImV4cCI6MjA5ODA1MjE5NX0.aynqU9qXjC8j8nsGuxGHzKheqe6YrLfGDVFdTVFMQMQ';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let selectedDays = 365;
+
+function selectDuration(btn) {
+  document.querySelectorAll('.days-chip').forEach(c => c.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedDays = parseInt(btn.dataset.days);
+  updateDeliveryDate();
+}
+
+function updateDeliveryDate() {
+  const date = new Date();
+  date.setDate(date.getDate() + selectedDays);
+  const label = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('delivery-date-label').textContent = label;
+}
+
+// Word count
+const textarea = document.getElementById('letter-body');
+textarea.addEventListener('input', () => {
+  const words = textarea.value.trim().split(/\s+/).filter(w => w).length;
+  document.getElementById('word-count').textContent = words;
+  document.getElementById('letter-email').addEventListener('change', loadSavedLetters);
+  const pct = Math.min((words / 20) * 100, 100);
+  document.getElementById('word-progress').style.width = pct + '%';
+});
+
+function insertPrompt(text) {
+  const ta = document.getElementById('letter-body');
+  const cursor = ta.selectionStart;
+  const before = ta.value.substring(0, cursor);
+  const after = ta.value.substring(cursor);
+  ta.value = before + (before ? '\n\n' : '') + text + '\n' + after;
+  ta.dispatchEvent(new Event('input'));
+  ta.focus();
+  showToast('Pertanyaan ditambahkan ke surat!', 'edit_note');
+}
+
+function goToStep1() {
+  document.getElementById('form-step1').style.display = 'block';
+  document.getElementById('form-step2').style.display = 'none';
+  document.getElementById('step1-dot').className = 'step-dot active';
+  document.getElementById('step2-dot').className = 'step-dot';
+}
+
+function goToStep2() {
+  const title = document.getElementById('letter-title').value.trim();
+  const body = document.getElementById('letter-body').value.trim();
+  const words = body.split(/\s+/).filter(w => w).length;
+
+  if (!title) { showToast('Berikan judul untuk suratmu!', 'info'); return; }
+  if (words < 20) { showToast('Tulis minimal 20 kata ya!', 'info'); return; }
+
+  const delivDate = new Date();
+  delivDate.setDate(delivDate.getDate() + selectedDays);
+
+  document.getElementById('summary-title').textContent = title;
+  document.getElementById('summary-date').textContent = `Dikirim: ${delivDate.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' })}`;
+  document.getElementById('summary-preview').textContent = body.substring(0, 120) + (body.length > 120 ? '…' : '');
+
+  document.getElementById('form-step1').style.display = 'none';
+  document.getElementById('form-step2').style.display = 'block';
+  document.getElementById('step1-dot').className = 'step-dot done';
+  document.getElementById('step2-dot').className = 'step-dot active';
+}
+
+async function saveLetter() {
+  const title = document.getElementById('letter-title').value.trim();
+  const body = document.getElementById('letter-body').value.trim();
+  const email = document.getElementById('letter-email').value.trim();
+
+  if (!email || !email.includes('@')) { showToast('Masukkan email yang valid!', 'info'); return; }
+
+  const delivDate = new Date();
+  delivDate.setDate(delivDate.getDate() + selectedDays);
+
+  const { error } = await supabase.from('future_letters').insert({
+    title,
+    body,
+    email,
+    delivery_date: delivDate.toISOString(),
+  });
+
+  if (error) {
+    console.error(error);
+    showToast('Gagal menyimpan surat, coba lagi.', 'error');
+    return;
+  }
+
+  document.getElementById('form-step2').style.display = 'none';
+  document.getElementById('form-step3').style.display = 'block';
+  document.getElementById('step2-dot').className = 'step-dot done';
+  document.getElementById('step3-dot').className = 'step-dot done';
+
+  loadSavedLetters();
+  showToast('Surat tersimpan! Sampai jumpa di masa depan.', 'schedule_send');
+}
+
+function resetForm() {
+  document.getElementById('letter-title').value = '';
+  document.getElementById('letter-body').value = '';
+  document.getElementById('letter-email').value = '';
+  document.getElementById('word-count').textContent = '0';
+  document.getElementById('word-progress').style.width = '0%';
+
+  document.getElementById('form-step3').style.display = 'none';
+  document.getElementById('form-step1').style.display = 'block';
+  document.getElementById('step1-dot').className = 'step-dot active';
+  document.getElementById('step2-dot').className = 'step-dot';
+  document.getElementById('step3-dot').className = 'step-dot';
+}
+
+async function loadSavedLetters() {
+  const email = document.getElementById('letter-email').value.trim();
+  const el = document.getElementById('saved-letters-list');
+
+  if (!email) {
+    el.innerHTML = '<p style="font-size:0.85rem;color:var(--text-muted);font-style:italic;text-align:center;padding:1.5rem 0;">Masukkan emailmu di atas untuk melihat surat tersimpanmu.</p>';
+    return;
+  }
+
+  const { data: letters, error } = await supabase
+    .from('future_letters')
+    .select('*')
+    .eq('email', email)
+    .order('delivery_date', { ascending: true });
+
+  if (error) { console.error(error); return; }
+
+  if (!letters.length) {
+    el.innerHTML = '<p style="font-size:0.85rem;color:var(--text-muted);font-style:italic;text-align:center;padding:1.5rem 0;">Belum ada surat. Tulis satu untuk dirimu!</p>';
+    return;
+  }
+
+  el.innerHTML = letters.map(l => {
+    const deliv = new Date(l.delivery_date);
+    const now = new Date();
+    const canRead = now >= deliv;
+    const daysLeft = Math.ceil((deliv - now) / (1000 * 60 * 60 * 24));
+    return `
+      <div class="saved-letter">
+        <button class="delete-btn" onclick="deleteLetter(${l.id})">
+          <span class="material-icons-round" style="font-size:0.9rem;">delete</span>
+        </button>
+        <h4>${l.title}</h4>
+        <div class="meta">
+          <span class="material-icons-round" style="font-size:0.85rem;">${canRead ? 'mark_email_read' : 'schedule_send'}</span>
+          ${canRead ? 'Sudah bisa dibaca!' : `${daysLeft} hari lagi`} ·
+          ${deliv.toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'})}
+        </div>
+        <p class="preview">${l.body}</p>
+        ${canRead ? `<button onclick="readLetter(${l.id})" class="btn-primary" style="margin-top:0.75rem;padding:0.5rem 1rem;font-size:0.8rem;"><span class="material-icons-round" style="font-size:0.9rem;">auto_stories</span> Baca Suratmu</button>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+async function readLetter(id) {
+  const { data: l, error } = await supabase
+    .from('future_letters')
+    .select('*')
+    .eq('id', id)
+    .single();
+  if (error || !l) return;
+
+  document.getElementById('read-title').textContent = l.title;
+  document.getElementById('read-meta').textContent = `Ditulis ${new Date(l.written_at).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})} · Untuk ${l.email}`;
+  document.getElementById('read-body').textContent = l.body;
+  openModal('read-letter-modal');
+}
+
+async function deleteLetter(id) {
+  const { error } = await supabase.from('future_letters').delete().eq('id', id);
+  if (error) { console.error(error); return; }
+  loadSavedLetters();
+  showToast('Surat dihapus.', 'delete');
+}
+
+// Init
+updateDeliveryDate();
+
+// Responsive grid
+function adjustGrid() {
+  const grid = document.getElementById('main-grid');
+  if (window.innerWidth < 900) {
+    grid.style.gridTemplateColumns = '1fr';
+  } else {
+    grid.style.gridTemplateColumns = '1fr 380px';
+  }
+}
+window.addEventListener('resize', adjustGrid);
+adjustGrid();
+</script>
+</body>
+</html>

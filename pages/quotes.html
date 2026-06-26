@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kotak Saran Sastra — Ruang Perempuan</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .quote-card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.75rem;
+      border: 1px solid var(--pink-light);
+      box-shadow: 0 4px 20px rgba(247,160,184,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    .quote-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(247,160,184,0.2);
+    }
+    .quote-card-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.98rem;
+      color: var(--text-dark);
+      line-height: 1.75;
+      margin-bottom: 1rem;
+    }
+    .quote-card-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .like-btn {
+      background: none;
+      border: 1px solid var(--pink-light);
+      border-radius: 999px;
+      padding: 0.3rem 0.8rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .like-btn:hover, .like-btn.liked {
+      background: var(--pink-light);
+      color: var(--pink-deep);
+      border-color: var(--pink-rose);
+    }
+    .like-btn .material-icons-round { font-size: 0.9rem; }
+    .masonry {
+      columns: 3 300px;
+      column-gap: 1.25rem;
+    }
+    .masonry .quote-card {
+      break-inside: avoid;
+      margin-bottom: 1.25rem;
+    }
+    @media (max-width: 600px) {
+      .masonry { columns: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<audio id="bg-music" preload="none"><source src="../assets/Nadin Amizah - Semua Aku Dirayakan.mp3" type="audio/mpeg" /></audio>
+<div id="loading-screen">
+  <div id="lottie-container" style="width:180px;height:180px;"></div>
+  <p>membuka halaman sastra…</p>
+</div>
+<button id="music-btn" title="Toggle musik"><span class="material-icons-round">music_note</span></button>
+<div id="toast"></div>
+
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand">Ruang Perempuan</a>
+  <ul class="navbar-links">
+    <li><a href="../index.html"><span class="material-icons-round">home</span> Beranda</a></li>
+    <li><a href="letters.html"><span class="material-icons-round">mail</span> Kotak Surat</a></li>
+    <li><a href="quotes.html" class="active"><span class="material-icons-round">format_quote</span> Sastra</a></li>
+    <li><a href="recommendations.html"><span class="material-icons-round">star</span> Rekomendasi</a></li>
+    <li><a href="future-letter.html"><span class="material-icons-round">send</span> Surat Masa Depan</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger-btn"><span class="material-icons-round">menu</span></button>
+</nav>
+<nav class="nav-mobile" id="mobile-nav">
+  <a href="../index.html"><span class="material-icons-round">home</span> Beranda</a>
+  <a href="letters.html"><span class="material-icons-round">mail</span> Kotak Surat</a>
+  <a href="quotes.html"><span class="material-icons-round">format_quote</span> Sastra</a>
+  <a href="recommendations.html"><span class="material-icons-round">star</span> Rekomendasi</a>
+  <a href="future-letter.html"><span class="material-icons-round">send</span> Surat Masa Depan</a>
+</nav>
+
+<!-- HEADER -->
+<div style="background:linear-gradient(160deg,var(--pink-light) 0%,var(--cream) 100%);padding:6rem 2rem 3rem;text-align:center;position:relative;overflow:hidden;">
+  <img src="../assets/cloud-decor.png" alt="" class="cloud-decor left">
+  <img src="../assets/cloud-decor.png" alt="" class="cloud-decor right">
+  <p class="section-eyebrow fade-in">Kotak Saran Sastra</p>
+  <h1 class="section-title fade-in fade-in-delay" style="font-size:clamp(1.8rem,4vw,3rem);">
+    Kata-kata yang <em>menyentuh hati</em>
+  </h1>
+  <p class="section-subtitle fade-in fade-in-delay-2">
+    Kutipan dari pengunjung dan penulis-penulis perempuan yang menginspirasi. Kamu juga bisa mengirimkan milikmu.
+  </p>
+</div>
+
+<!-- SUBMIT FORM -->
+<div style="background:var(--peach);padding:2.5rem 1.5rem;border-top:1px solid var(--pink-light);border-bottom:1px solid var(--pink-light);">
+  <div class="form-card" style="max-width:700px;background:white;">
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:0.4rem;color:var(--text-dark);">
+      Bagikan kutipan favoritmu
+    </h3>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.5rem;">
+      Dari buku, dari hatimu sendiri, atau dari siapa saja — selama kata-katanya bermakna.
+    </p>
+    <div class="form-group">
+      <label class="form-label">
+        <span class="material-icons-round">format_quote</span> Kutipan
+      </label>
+      <textarea id="new-quote" class="form-textarea" placeholder="Tuliskan kata-kata yang ingin kamu bagikan…" rows="3"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="form-group">
+        <label class="form-label"><span class="material-icons-round">person</span> Sumber / Penulis</label>
+        <input type="text" id="new-author" class="form-input" placeholder="Dee Lestari, Anonim, dll." />
+      </div>
+      <div class="form-group">
+        <label class="form-label"><span class="material-icons-round">face</span> Namamu (opsional)</label>
+        <input type="text" id="new-name" class="form-input" placeholder="Namamu atau Anonim" />
+      </div>
+    </div>
+    <button onclick="submitQuote()" class="btn-primary" style="width:100%;justify-content:center;margin-top:0.5rem;">
+      <span class="material-icons-round" style="font-size:1rem;">send</span>
+      Kirim Kutipan
+    </button>
+  </div>
+</div>
+
+<!-- QUOTES GRID -->
+<div class="section">
+  <!-- Filter pills -->
+  <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:2rem;">
+    <button class="tag-pill filter-btn active" data-filter="all" onclick="filterQuotes('all', this)">
+      <span class="material-icons-round" style="font-size:0.85rem;">apps</span> Semua
+    </button>
+    <button class="tag-pill filter-btn" data-filter="sastra" onclick="filterQuotes('sastra', this)" style="background:var(--cream);color:var(--text-muted);">
+      <span class="material-icons-round" style="font-size:0.85rem;">auto_stories</span> Sastra
+    </button>
+    <button class="tag-pill filter-btn" data-filter="personal" onclick="filterQuotes('personal', this)" style="background:var(--cream);color:var(--text-muted);">
+      <span class="material-icons-round" style="font-size:0.85rem;">favorite</span> Personal
+    </button>
+    <button class="tag-pill filter-btn" data-filter="penulis" onclick="filterQuotes('penulis', this)" style="background:var(--cream);color:var(--text-muted);">
+      <span class="material-icons-round" style="font-size:0.85rem;">create</span> Penulis Perempuan
+    </button>
+  </div>
+
+  <div class="masonry" id="quotes-container"></div>
+</div>
+
+<footer>
+  <div class="brand">Ruang Perempuan</div>
+  <p>Kata-kata adalah jembatan antar jiwa.</p>
+  <nav>
+    <a href="../index.html">Beranda</a>
+    <a href="letters.html">Kotak Surat</a>
+    <a href="quotes.html">Sastra</a>
+    <a href="recommendations.html">Rekomendasi</a>
+    <a href="future-letter.html">Surat Masa Depan</a>
+  </nav>
+  <p style="opacity:0.4;font-size:0.75rem;margin-top:1rem;">© 2026 arrval_ </p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<script src="../js/main.js"></script>
+<script>
+const SUPABASE_URL = 'https://mfpsxmrnimqznnuoqpgy.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mcHN4bXJuaW1xem5udW9xcGd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NzYxOTUsImV4cCI6MjA5ODA1MjE5NX0.aynqU9qXjC8j8nsGuxGHzKheqe6YrLfGDVFdTVFMQMQ';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let allQuotes = [];
+let currentFilter = 'all';
+
+async function loadQuotes() {
+  const { data, error } = await supabase
+    .from('quotes')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error(error);
+    showToast('Gagal memuat kutipan.', 'error');
+    return;
+  }
+
+  // Samakan nama field dengan yang dipakai renderQuotes (by_name -> by)
+  allQuotes = data.map(q => ({ ...q, by: q.by_name }));
+  renderQuotes(allQuotes);
+}
+
+function renderQuotes(quotes) {
+  const container = document.getElementById('quotes-container');
+  const filtered = currentFilter === 'all' ? quotes : quotes.filter(q => q.category === currentFilter);
+  const likedIds = getStorage('liked_quotes', []);
+
+  container.innerHTML = filtered.map(q => `
+    <div class="quote-card fade-in" data-id="${q.id}">
+      <p class="quote-card-text">"${q.text}"</p>
+      <div class="quote-card-meta">
+        <span>— ${q.author}</span>
+        <button class="like-btn ${likedIds.includes(q.id) ? 'liked' : ''}" onclick="likeQuote(${q.id})">
+          <span class="material-icons-round">favorite</span>
+          <span id="likes-${q.id}">${q.likes}</span>
+        </button>
+      </div>
+      ${q.by ? `<p style="font-size:0.72rem;color:var(--pink-rose);margin-top:0.5rem;">dibagikan oleh ${q.by}</p>` : ''}
+    </div>
+  `).join('');
+}
+
+function filterQuotes(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.style.background = 'var(--cream)';
+    b.style.color = 'var(--text-muted)';
+  });
+  btn.style.background = 'var(--pink-light)';
+  btn.style.color = 'var(--pink-deep)';
+  renderQuotes(allQuotes);
+}
+
+async function likeQuote(id) {
+  const liked = getStorage('liked_quotes', []);
+  const quote = allQuotes.find(q => q.id === id);
+  if (!quote) return;
+
+  const alreadyLiked = liked.includes(id);
+  const newLikes = alreadyLiked ? quote.likes - 1 : quote.likes + 1;
+
+  const { error } = await supabase
+    .from('quotes')
+    .update({ likes: newLikes })
+    .eq('id', id);
+
+  if (error) { console.error(error); return; }
+
+  quote.likes = newLikes;
+  setStorage('liked_quotes', alreadyLiked ? liked.filter(l => l !== id) : [...liked, id]);
+  renderQuotes(allQuotes);
+}
+
+async function submitQuote() {
+  const text = document.getElementById('new-quote').value.trim();
+  const author = document.getElementById('new-author').value.trim() || 'Anonim';
+  const by = document.getElementById('new-name').value.trim() || 'Anonim';
+
+  if (!text) { showToast('Tuliskan kutipannya dulu ya!', 'info'); return; }
+  if (text.length < 10) { showToast('Kutipan terlalu pendek, tambahkan sedikit lagi.', 'info'); return; }
+
+  const { error } = await supabase.from('quotes').insert({
+    text,
+    author,
+    by_name: by,
+    category: 'personal',
+    likes: 0
+  });
+
+  if (error) {
+    console.error(error);
+    showToast('Gagal mengirim kutipan, coba lagi.', 'error');
+    return;
+  }
+
+  await loadQuotes(); // ambil ulang dari server, termasuk kutipan baru
+  document.getElementById('new-quote').value = '';
+  document.getElementById('new-author').value = '';
+  document.getElementById('new-name').value = '';
+  showToast('Kutipanmu sudah terkirim! Terima kasih!', 'auto_stories');
+}
+
+loadQuotes();
+supabase
+  .channel('quotes-realtime')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'quotes' }, () => {
+    loadQuotes();
+  })
+  .subscribe();
+</script>
+</body>
+</html>

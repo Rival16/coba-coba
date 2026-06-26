@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pojok Rekomendasi — Ruang Perempuan</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .tab-nav {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+      background: var(--pink-light);
+      padding: 0.4rem;
+      border-radius: 1rem;
+      width: fit-content;
+    }
+    .tab-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.75rem;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: background 0.2s, color 0.2s;
+    }
+    .tab-btn.active {
+      background: white;
+      color: var(--pink-deep);
+      box-shadow: 0 2px 8px rgba(247,160,184,0.2);
+    }
+    .tab-btn .material-icons-round { font-size: 1rem; }
+    .rec-big-card {
+      background: white;
+      border-radius: 1.75rem;
+      overflow: hidden;
+      box-shadow: 0 4px 25px rgba(247,160,184,0.12);
+      border: 1px solid var(--pink-light);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .rec-big-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 35px rgba(247,160,184,0.22);
+    }
+    .rec-big-header {
+      background: linear-gradient(135deg, var(--pink-soft), var(--peach));
+      padding: 1.75rem;
+    }
+    .rec-big-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 0.35rem;
+    }
+    .rec-big-header .subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .rec-big-body { padding: 1.5rem; }
+    .rec-item-full {
+      display: flex;
+      gap: 1rem;
+      padding: 0.875rem 0;
+      border-bottom: 1px solid var(--pink-light);
+      align-items: flex-start;
+    }
+    .rec-item-full:last-child { border-bottom: none; padding-bottom: 0; }
+    .rec-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--pink-light);
+      color: var(--pink-deep);
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .rec-item-full .info h4 {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-dark);
+      margin-bottom: 0.2rem;
+    }
+    .rec-item-full .info p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .month-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--pink-deep);
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+<audio id="bg-music" preload="none"><source src="../assets/Nadin Amizah - Semua Aku Dirayakan.mp3" type="audio/mpeg" /></audio>
+<div id="loading-screen">
+  <div id="lottie-container" style="width:180px;height:180px;"></div>
+  <p>menyiapkan rekomendasimu…</p>
+</div>
+<button id="music-btn" title="Toggle musik"><span class="material-icons-round">music_note</span></button>
+<div id="toast"></div>
+
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand">Ruang Perempuan</a>
+  <ul class="navbar-links">
+    <li><a href="../index.html"><span class="material-icons-round">home</span> Beranda</a></li>
+    <li><a href="letters.html"><span class="material-icons-round">mail</span> Kotak Surat</a></li>
+    <li><a href="quotes.html"><span class="material-icons-round">format_quote</span> Sastra</a></li>
+    <li><a href="recommendations.html" class="active"><span class="material-icons-round">star</span> Rekomendasi</a></li>
+    <li><a href="future-letter.html"><span class="material-icons-round">send</span> Surat Masa Depan</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger-btn"><span class="material-icons-round">menu</span></button>
+</nav>
+<nav class="nav-mobile" id="mobile-nav">
+  <a href="../index.html"><span class="material-icons-round">home</span> Beranda</a>
+  <a href="letters.html"><span class="material-icons-round">mail</span> Kotak Surat</a>
+  <a href="quotes.html"><span class="material-icons-round">format_quote</span> Sastra</a>
+  <a href="recommendations.html"><span class="material-icons-round">star</span> Rekomendasi</a>
+  <a href="future-letter.html"><span class="material-icons-round">send</span> Surat Masa Depan</a>
+</nav>
+
+<!-- HEADER -->
+<div style="background:linear-gradient(160deg,var(--pink-light) 0%,var(--cream) 100%);padding:6rem 2rem 3rem;text-align:center;">
+  <p class="section-eyebrow fade-in">Pojok Rekomendasi</p>
+  <h1 class="section-title fade-in fade-in-delay" style="font-size:clamp(1.8rem,4vw,3rem);">
+    Kurasi untuk <em>jiwamu</em>
+  </h1>
+  <p class="section-subtitle fade-in fade-in-delay-2">
+    Dipilih dengan hati setiap bulan — buku, film, dan playlist yang menemanimu.
+  </p>
+</div>
+
+<div class="section">
+  <!-- Month badge -->
+  <div class="month-badge">
+    <span class="material-icons-round" style="font-size:0.95rem;">calendar_month</span>
+    Kurasi Juni 2025
+  </div>
+
+  <!-- Tab nav -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('buku', this)">
+      <span class="material-icons-round">menu_book</span> Buku
+    </button>
+    <button class="tab-btn" onclick="switchTab('film', this)">
+      <span class="material-icons-round">movie</span> Film & Serial
+    </button>
+    <button class="tab-btn" onclick="switchTab('playlist', this)">
+      <span class="material-icons-round">headphones</span> Playlist
+    </button>
+  </div>
+
+  <!-- BUKU TAB -->
+  <div id="tab-buku" class="tab-content">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;">
+
+      <div class="rec-big-card fade-in">
+        <div class="rec-big-header">
+          <div class="tag-pill" style="margin-bottom:0.75rem;"><span class="material-icons-round" style="font-size:0.85rem;">auto_stories</span> Fiksi Perempuan Indonesia</div>
+          <h3>Karya Dee Lestari</h3>
+          <p class="subtitle">Sastra kontemporer dengan jiwa yang kuat</p>
+        </div>
+        <div class="rec-big-body">
+          <div class="rec-item-full"><div class="rec-num">1</div><div class="info"><h4>Supernova: Ksatria, Puteri & Bintang Jatuh</h4><p>Novel pembuka seri Supernova yang mengubah cara pandang tentang cinta dan semesta.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num">2</div><div class="info"><h4>Madre</h4><p>Kumpulan cerpen indah tentang memori, identitas, dan perjalanan jiwa.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num">3</div><div class="info"><h4>Filosofi Kopi</h4><p>Kisah tentang perfeksionisme dan apa artinya menjadi cukup baik.</p></div></div>
+        </div>
+      </div>
+
+      <div class="rec-big-card fade-in fade-in-delay">
+        <div class="rec-big-header" style="background:linear-gradient(135deg,var(--pink-rose),var(--peach));">
+          <div class="tag-pill" style="margin-bottom:0.75rem;"><span class="material-icons-round" style="font-size:0.85rem;">language</span> Penulis Dunia</div>
+          <h3>Puisi & Prosa Perempuan Dunia</h3>
+          <p class="subtitle">Kata-kata tanpa batas bahasa</p>
+        </div>
+        <div class="rec-big-body">
+          <div class="rec-item-full"><div class="rec-num">1</div><div class="info"><h4>Milk and Honey — Rupi Kaur</h4><p>Puisi visual tentang trauma, cinta, kehilangan, dan penyembuhan.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num">2</div><div class="info"><h4>The Bell Jar — Sylvia Plath</h4><p>Perjalanan seorang perempuan muda yang berjuang menemukan dirinya di dunia yang tak selalu ramah.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num">3</div><div class="info"><h4>Pachinko — Min Jin Lee</h4><p>Saga generasi tentang identitas, pengorbanan, dan kekuatan perempuan Korea.</p></div></div>
+        </div>
+      </div>
+
+      <div class="rec-big-card fade-in fade-in-delay-2">
+        <div class="rec-big-header" style="background:linear-gradient(135deg,var(--peach),var(--pink-light));">
+          <div class="tag-pill" style="margin-bottom:0.75rem;"><span class="material-icons-round" style="font-size:0.85rem;">history_edu</span> Sastra Klasik Indonesia</div>
+          <h3>Warisan Nh. Dini</h3>
+          <p class="subtitle">Suara perempuan Indonesia yang tak lekang waktu</p>
+        </div>
+        <div class="rec-big-body">
+          <div class="rec-item-full"><div class="rec-num">1</div><div class="info"><h4>Pada Sebuah Kapal</h4><p>Novel semi-autobiografi tentang cinta, pernikahan, dan kebebasan seorang perempuan.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num">2</div><div class="info"><h4>La Barka</h4><p>Potret perempuan yang terjebak antara tradisi dan keinginan jiwa untuk bebas.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num">3</div><div class="info"><h4>Hati Yang Damai</h4><p>Kisah yang menyentuh tentang pencarian kedamaian batin seorang perempuan.</p></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FILM TAB -->
+  <div id="tab-film" class="tab-content" style="display:none;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;">
+
+      <div class="rec-big-card fade-in">
+        <div class="rec-big-header" style="background:linear-gradient(135deg,#f7a0b8,#fbb6c4);">
+          <div class="tag-pill" style="margin-bottom:0.75rem;"><span class="material-icons-round" style="font-size:0.85rem;">movie</span> Film Indonesia</div>
+          <h3>Film Female-Led Lokal</h3>
+          <p class="subtitle">Sinema Indonesia dengan narasi perempuan yang kuat</p>
+        </div>
+        <div class="rec-big-body">
+          <div class="rec-item-full"><div class="rec-num">1</div><div class="info"><h4>Marlina Si Pembunuh dalam Empat Babak (2017)</h4><p>Western feminis Sumba — berani, puitis, dan memukau.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num">2</div><div class="info"><h4>Nana (2023)</h4><p>Tentang perempuan muda yang berjuang dengan identitas dan masa lalu keluarga.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num">3</div><div class="info"><h4>Yuni (2021)</h4><p>Gadis muda menolak lamaran demi mimpi-mimpinya. Film yang jujur dan berani.</p></div></div>
+        </div>
+      </div>
+
+      <div class="rec-big-card fade-in fade-in-delay">
+        <div class="rec-big-header" style="background:linear-gradient(135deg,var(--peach),var(--pink-rose));">
+          <div class="tag-pill" style="margin-bottom:0.75rem;"><span class="material-icons-round" style="font-size:0.85rem;">public</span> Film Internasional</div>
+          <h3>Kisah Perempuan Dunia</h3>
+          <p class="subtitle">Dari layar lebar yang menginspirasi</p>
+        </div>
+        <div class="rec-big-body">
+          <div class="rec-item-full"><div class="rec-num">1</div><div class="info"><h4>Little Women (2019)</h4><p>Empat bersaudara dengan empat mimpi berbeda. Tentang kebebasan, cinta, dan pilihan.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num">2</div><div class="info"><h4>Portrait of a Lady on Fire (2019)</h4><p>Film Prancis yang memukau tentang dua perempuan, seni, dan cinta yang tak bisa diucapkan.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num">3</div><div class="info"><h4>Hidden Figures (2016)</h4><p>Kisah nyata tiga perempuan kulit hitam yang menjadi tulang punggung program luar angkasa NASA.</p></div></div>
+        </div>
+      </div>
+
+      <div class="rec-big-card fade-in fade-in-delay-2">
+        <div class="rec-big-header" style="background:linear-gradient(135deg,var(--pink-light),var(--pink-soft));">
+          <div class="tag-pill" style="margin-bottom:0.75rem;"><span class="material-icons-round" style="font-size:0.85rem;">live_tv</span> Serial</div>
+          <h3>Serial yang Hangat & Kuat</h3>
+          <p class="subtitle">Untuk dinikmati di malam yang panjang</p>
+        </div>
+        <div class="rec-big-body">
+          <div class="rec-item-full"><div class="rec-num">1</div><div class="info"><h4>The Queen's Gambit</h4><p>Kisah seorang perempuan jenius di dunia catur yang didominasi laki-laki. Menakjubkan.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num">2</div><div class="info"><h4>Normal People</h4><p>Romansa yang jujur dan dewasa tentang dua jiwa yang tak henti-hentinya saling menarik.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num">3</div><div class="info"><h4>Heartstopper</h4><p>Cerita cinta yang hangat, murni, dan penuh cahaya. Cocok untuk hari yang butuh ketenangan.</p></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PLAYLIST TAB -->
+  <div id="tab-playlist" class="tab-content" style="display:none;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;">
+
+      <div class="rec-big-card fade-in">
+        <div class="rec-big-header" style="background:linear-gradient(135deg,#fbb6c4,#f7a0b8);">
+          <div class="tag-pill" style="margin-bottom:0.75rem;"><span class="material-icons-round" style="font-size:0.85rem;">spa</span> Healing</div>
+          <h3>Healing Hours</h3>
+          <p class="subtitle">Lo-fi & indie untuk jiwa yang butuh istirahat</p>
+        </div>
+        <div class="rec-big-body">
+          <div class="rec-item-full"><div class="rec-num"><span class="material-icons-round" style="font-size:0.9rem;">queue_music</span></div><div class="info"><h4>Coffee & Rain — Lofi Study Beats</h4><p>Ritme lambat yang menenangkan. Cocok untuk membaca atau melamun.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num"><span class="material-icons-round" style="font-size:0.9rem;">queue_music</span></div><div class="info"><h4>Bedroom Pop Comfort</h4><p>Indie pop yang lembut dan hangat seperti selimut tebal.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num"><span class="material-icons-round" style="font-size:0.9rem;">queue_music</span></div><div class="info"><h4>Rainy Day Classics — Instrumental</h4><p>Piano dan strings untuk hari-hari yang penuh perasaan.</p></div></div>
+          <p style="font-size:0.78rem;color:var(--pink-rose);margin-top:0.75rem;display:flex;align-items:center;gap:0.3rem;"><span class="material-icons-round" style="font-size:0.9rem;">open_in_new</span> Cari di Spotify: "Healing Hours Lofi"</p>
+        </div>
+      </div>
+
+      <div class="rec-big-card fade-in fade-in-delay">
+        <div class="rec-big-header" style="background:linear-gradient(135deg,var(--peach),var(--pink-rose));">
+          <div class="tag-pill" style="margin-bottom:0.75rem;"><span class="material-icons-round" style="font-size:0.85rem;">bolt</span> Semangat</div>
+          <h3>Strong Women Anthem</h3>
+          <p class="subtitle">Lagu-lagu yang membuatmu merasa tak terkalahkan</p>
+        </div>
+        <div class="rec-big-body">
+          <div class="rec-item-full"><div class="rec-num"><span class="material-icons-round" style="font-size:0.9rem;">queue_music</span></div><div class="info"><h4>Roar — Katy Perry</h4><p>Anthem keberanian yang sudah terbukti membangkitkan semangat.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num"><span class="material-icons-round" style="font-size:0.9rem;">queue_music</span></div><div class="info"><h4>Run the World — Beyoncé</h4><p>Karena dunia ini memang dijalankan oleh perempuan yang berani.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num"><span class="material-icons-round" style="font-size:0.9rem;">queue_music</span></div><div class="info"><h4>Woman — Doja Cat</h4><p>Energi tinggi untuk hari ketika kamu butuh merasa powerful.</p></div></div>
+          <p style="font-size:0.78rem;color:var(--pink-rose);margin-top:0.75rem;display:flex;align-items:center;gap:0.3rem;"><span class="material-icons-round" style="font-size:0.9rem;">open_in_new</span> Cari di Spotify: "Female Empowerment Hits"</p>
+        </div>
+      </div>
+
+      <div class="rec-big-card fade-in fade-in-delay-2">
+        <div class="rec-big-header" style="background:linear-gradient(135deg,var(--pink-light),var(--peach));">
+          <div class="tag-pill" style="margin-bottom:0.75rem;"><span class="material-icons-round" style="font-size:0.85rem;">wb_sunny</span> Pagi Hari</div>
+          <h3>Sunday Slow Morning</h3>
+          <p class="subtitle">Untuk pagi yang tenang dan penuh harapan</p>
+        </div>
+        <div class="rec-big-body">
+          <div class="rec-item-full"><div class="rec-num"><span class="material-icons-round" style="font-size:0.9rem;">queue_music</span></div><div class="info"><h4>Sunday Best — Surfaces</h4><p>Lagu yang membuat pagi terasa seperti pelukan hangat dari matahari.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num"><span class="material-icons-round" style="font-size:0.9rem;">queue_music</span></div><div class="info"><h4>Golden Hour — JVKE</h4><p>Melodi yang ringan untuk memulai hari dengan penuh syukur.</p></div></div>
+          <div class="rec-item-full"><div class="rec-num"><span class="material-icons-round" style="font-size:0.9rem;">queue_music</span></div><div class="info"><h4>Die With A Smile — Bruno Mars x Lady Gaga</h4><p>Untuk pagi ketika kamu ingin merasakan cinta yang besar.</p></div></div>
+          <p style="font-size:0.78rem;color:var(--pink-rose);margin-top:0.75rem;display:flex;align-items:center;gap:0.3rem;"><span class="material-icons-round" style="font-size:0.9rem;">open_in_new</span> Cari di Spotify: "Morning Coffee Playlist"</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="brand">Ruang Perempuan</div>
+  <p>Kurasi dengan rasa cinta — setiap bulan.</p>
+  <nav>
+    <a href="../index.html">Beranda</a>
+    <a href="letters.html">Kotak Surat</a>
+    <a href="quotes.html">Sastra</a>
+    <a href="recommendations.html">Rekomendasi</a>
+    <a href="future-letter.html">Surat Masa Depan</a>
+  </nav>
+  <p style="opacity:0.4;font-size:0.75rem;margin-top:1rem;">© 2026 arrval_ </p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<script src="../js/main.js"></script>
+<script>
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).style.display = 'block';
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
