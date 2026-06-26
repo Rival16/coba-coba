@@ -417,7 +417,7 @@
 <script>
 const SUPABASE_URL = 'https://mfpsxmrnimqznnuoqpgy.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mcHN4bXJuaW1xem5udW9xcGd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NzYxOTUsImV4cCI6MjA5ODA1MjE5NX0.aynqU9qXjC8j8nsGuxGHzKheqe6YrLfGDVFdTVFMQMQ';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let selectedDays = 365;
 
 function selectDuration(btn) {
@@ -435,14 +435,14 @@ function updateDeliveryDate() {
 }
 
 // Word count
-const textarea = document.getElementById('letter-body');
 textarea.addEventListener('input', () => {
   const words = textarea.value.trim().split(/\s+/).filter(w => w).length;
   document.getElementById('word-count').textContent = words;
-  document.getElementById('letter-email').addEventListener('change', loadSavedLetters);
   const pct = Math.min((words / 20) * 100, 100);
   document.getElementById('word-progress').style.width = pct + '%';
 });
+
+document.getElementById('letter-email').addEventListener('change', loadSavedLetters);
 
 function insertPrompt(text) {
   const ta = document.getElementById('letter-body');
@@ -493,7 +493,7 @@ async function saveLetter() {
   const delivDate = new Date();
   delivDate.setDate(delivDate.getDate() + selectedDays);
 
-  const { error } = await supabase.from('future_letters').insert({
+  const { error } = await db.from('future_letters').insert({
     title,
     body,
     email,
@@ -538,7 +538,7 @@ async function loadSavedLetters() {
     return;
   }
 
-  const { data: letters, error } = await supabase
+  const { data: letters, error } = await db
     .from('future_letters')
     .select('*')
     .eq('email', email)
@@ -575,7 +575,7 @@ async function loadSavedLetters() {
 }
 
 async function readLetter(id) {
-  const { data: l, error } = await supabase
+  const { data: l, error } = await db
     .from('future_letters')
     .select('*')
     .eq('id', id)
@@ -589,7 +589,7 @@ async function readLetter(id) {
 }
 
 async function deleteLetter(id) {
-  const { error } = await supabase.from('future_letters').delete().eq('id', id);
+  const { error } = await db.from('future_letters').delete().eq('id', id);
   if (error) { console.error(error); return; }
   loadSavedLetters();
   showToast('Surat dihapus.', 'delete');
@@ -598,17 +598,6 @@ async function deleteLetter(id) {
 // Init
 updateDeliveryDate();
 
-// Responsive grid
-function adjustGrid() {
-  const grid = document.getElementById('main-grid');
-  if (window.innerWidth < 900) {
-    grid.style.gridTemplateColumns = '1fr';
-  } else {
-    grid.style.gridTemplateColumns = '1fr 380px';
-  }
-}
-window.addEventListener('resize', adjustGrid);
-adjustGrid();
 </script>
 </body>
 </html>

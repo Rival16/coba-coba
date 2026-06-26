@@ -183,12 +183,12 @@
 <script>
 const SUPABASE_URL = 'https://mfpsxmrnimqznnuoqpgy.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mcHN4bXJuaW1xem5udW9xcGd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NzYxOTUsImV4cCI6MjA5ODA1MjE5NX0.aynqU9qXjC8j8nsGuxGHzKheqe6YrLfGDVFdTVFMQMQ';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let allQuotes = [];
 let currentFilter = 'all';
 
 async function loadQuotes() {
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from('quotes')
     .select('*')
     .order('created_at', { ascending: false });
@@ -243,7 +243,7 @@ async function likeQuote(id) {
   const alreadyLiked = liked.includes(id);
   const newLikes = alreadyLiked ? quote.likes - 1 : quote.likes + 1;
 
-  const { error } = await supabase
+  const { error } = await db
     .from('quotes')
     .update({ likes: newLikes })
     .eq('id', id);
@@ -263,7 +263,7 @@ async function submitQuote() {
   if (!text) { showToast('Tuliskan kutipannya dulu ya!', 'info'); return; }
   if (text.length < 10) { showToast('Kutipan terlalu pendek, tambahkan sedikit lagi.', 'info'); return; }
 
-  const { error } = await supabase.from('quotes').insert({
+  const { error } = await db.from('quotes').insert({
     text,
     author,
     by_name: by,
@@ -285,7 +285,7 @@ async function submitQuote() {
 }
 
 loadQuotes();
-supabase
+db
   .channel('quotes-realtime')
   .on('postgres_changes', { event: '*', schema: 'public', table: 'quotes' }, () => {
     loadQuotes();

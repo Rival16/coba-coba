@@ -859,3 +859,8 @@ footer nav a:hover { color: var(--pink-soft); }
 @media (max-width: 768px) {
   .cloud-decor { display: none; } /* sembunyikan di layar kecil agar tidak menutupi teks */
 }
+@media (max-width: 900px) {
+  #main-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
