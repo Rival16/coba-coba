@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ruang Perempuan — Untuk Kamu yang Sedang Merasakan</title>
+  <meta name="description" content="Ruang hangat untuk perempuan. Kutipan sastra, rekomendasi buku & film, kotak surat virtual, dan surat untuk masa depan." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Tailwind custom config override */
+    .hero-btn-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  </style>
+</head>
+<body>
+
+<!-- AUDIO (ganti src dengan file musikmu) -->
+<audio id="bg-music" preload="none">
+  <source src="assets/music.mp3" type="audio/mpeg" />
+</audio>
+
+<!-- LOADING SCREEN -->
+<div id="loading-screen">
+  <div id="lottie-container" style="width:200px;height:200px;"></div>
+  <p>sedang menyiapkan ruangmu…</p>
+</div>
+
+<!-- MUSIC BUTTON -->
+<button id="music-btn" title="Toggle musik">
+  <span class="material-icons-round">music_note</span>
+</button>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand">Ruang Perempuan</a>
+  <ul class="navbar-links">
+    <li><a href="index.html" class="active"><span class="material-icons-round">home</span> Beranda</a></li>
+    <li><a href="pages/letters.html"><span class="material-icons-round">mail</span> Kotak Surat</a></li>
+    <li><a href="pages/quotes.html"><span class="material-icons-round">format_quote</span> Sastra</a></li>
+    <li><a href="pages/recommendations.html"><span class="material-icons-round">star</span> Rekomendasi</a></li>
+    <li><a href="pages/future-letter.html"><span class="material-icons-round">send</span> Surat Masa Depan</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger-btn">
+    <span class="material-icons-round">menu</span>
+  </button>
+</nav>
+
+<!-- MOBILE NAV -->
+<nav class="nav-mobile" id="mobile-nav">
+  <a href="index.html"><span class="material-icons-round">home</span> Beranda</a>
+  <a href="pages/letters.html"><span class="material-icons-round">mail</span> Kotak Surat</a>
+  <a href="pages/quotes.html"><span class="material-icons-round">format_quote</span> Sastra</a>
+  <a href="pages/recommendations.html"><span class="material-icons-round">star</span> Rekomendasi</a>
+  <a href="pages/future-letter.html"><span class="material-icons-round">send</span> Surat Masa Depan</a>
+</nav>
+
+<!-- ====== HERO ====== -->
+<section class="hero">
+  <div class="hero-content">
+    <div>
+      <p class="hero-tagline fade-in">Ruang hangat untukmu</p>
+      <h1 class="hero-title fade-in fade-in-delay">
+        Kamu tidak<br/><em>sendirian</em> di sini.
+      </h1>
+      <p class="hero-desc fade-in fade-in-delay-2">
+        Ini adalah ruang yang dibuat dengan rasa cinta. Tempat kamu bisa membaca, merasakan, berbagi, dan mengirim surat untuk dirimu sendiri di masa depan.
+      </p>
+      <div class="hero-btn-row fade-in fade-in-delay-3">
+        <a href="pages/letters.html" class="btn-primary">
+          <span class="material-icons-round" style="font-size:1.1rem;">mail_outline</span>
+          Buka Kotak Surat
+        </a>
+        <a href="pages/quotes.html" class="btn-secondary">
+          Jelajahi Sastra
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-cards">
+      <a href="pages/letters.html" class="feature-card-mini fade-in fade-in-delay">
+        <div class="feature-icon">
+          <span class="material-icons-round">inbox</span>
+        </div>
+        <div>
+          <h4>Kotak Surat Virtual</h4>
+          <p>Buka pesan sesuai perasaanmu hari ini. Klik dan rasakan.</p>
+        </div>
+      </a>
+      <a href="pages/quotes.html" class="feature-card-mini fade-in fade-in-delay-2">
+        <div class="feature-icon">
+          <span class="material-icons-round">auto_stories</span>
+        </div>
+        <div>
+          <h4>Kotak Saran Sastra</h4>
+          <p>Kutipan dari pengunjung lain. Kata-kata yang menyentuh hati.</p>
+        </div>
+      </a>
+      <a href="pages/recommendations.html" class="feature-card-mini fade-in fade-in-delay-3">
+        <div class="feature-icon">
+          <span class="material-icons-round">local_library</span>
+        </div>
+        <div>
+          <h4>Pojok Rekomendasi</h4>
+          <p>Buku, film, dan playlist kurasi bulanan pilihan.</p>
+        </div>
+      </a>
+      <a href="pages/future-letter.html" class="feature-card-mini fade-in fade-in-delay-3">
+        <div class="feature-icon">
+          <span class="material-icons-round">schedule_send</span>
+        </div>
+        <div>
+          <h4>Surat untuk Masa Depan</h4>
+          <p>Tulis untuk dirimu 1 tahun lagi. Dikirim otomatis ke emailmu.</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ====== KOTAK SURAT PREVIEW ====== -->
+<div class="section">
+  <div class="section-header fade-in">
+    <p class="section-eyebrow">Virtual Flower Box</p>
+    <h2 class="section-title">Buka kotak sesuai<br/><em>perasaanmu</em> hari ini</h2>
+    <p class="section-subtitle">Setiap kotak menyimpan pesan yang mungkin tepat kamu butuhkan sekarang.</p>
+  </div>
+
+  <div class="letter-grid">
+    <a href="pages/letters.html#lelah" class="letter-box fade-in">
+      <span class="material-icons-round">bedtime</span>
+      <h3>Buka saat kamu merasa lelah</h3>
+      <p>Untuk harimu yang berat. Kamu sudah cukup berjuang.</p>
+    </a>
+    <a href="pages/letters.html#ragu" class="letter-box fade-in fade-in-delay">
+      <span class="material-icons-round">psychology</span>
+      <h3>Buka saat kamu ragu dengan dirimu</h3>
+      <p>Untuk momen ketika kamu lupa betapa kuatnya dirimu.</p>
+    </a>
+    <a href="pages/letters.html#tenang" class="letter-box fade-in fade-in-delay-2">
+      <span class="material-icons-round">spa</span>
+      <h3>Buka saat kamu butuh ketenangan</h3>
+      <p>Puisi dan sastra Indonesia untuk menenangkan jiwamu.</p>
+    </a>
+    <a href="pages/letters.html#bahagia" class="letter-box fade-in fade-in-delay-3">
+      <span class="material-icons-round">celebration</span>
+      <h3>Buka saat kamu ingin merayakan diri</h3>
+      <p>Karena kamu layak dirayakan, bahkan tanpa alasan besar.</p>
+    </a>
+    <a href="pages/letters.html#rindu" class="letter-box fade-in">
+      <span class="material-icons-round">favorite_border</span>
+      <h3>Buka saat kamu merasa rindu</h3>
+      <p>Kata-kata untuk malam yang terasa terlalu sunyi.</p>
+    </a>
+    <a href="pages/letters.html#semangat" class="letter-box fade-in fade-in-delay">
+      <span class="material-icons-round">bolt</span>
+      <h3>Buka saat kamu butuh semangat</h3>
+      <p>Dorongan kecil untuk terus melangkah maju.</p>
+    </a>
+  </div>
+
+  <div style="text-align:center;margin-top:2.5rem;">
+    <a href="pages/letters.html" class="btn-primary">
+      <span class="material-icons-round" style="font-size:1rem;">open_in_full</span>
+      Lihat Semua Kotak
+    </a>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ====== QUOTE PREVIEW ====== -->
+<div style="background:linear-gradient(160deg,var(--pink-light) 0%,var(--cream) 100%);padding:5rem 2rem;">
+  <div class="section" style="padding:0;">
+    <div class="section-header fade-in">
+      <p class="section-eyebrow">Kotak Saran Sastra</p>
+      <h2 class="section-title">Kata-kata dari<br/><em>perempuan-perempuan</em> luar biasa</h2>
+    </div>
+
+    <div class="quote-display fade-in">
+      <p class="quote-text" id="random-quote">
+        "Aku percaya bahwa setiap perempuan yang berdiri di hadapan cermin dan berkata 'aku cukup', sedang melakukan revolusi terkecil yang paling bermakna."
+      </p>
+      <p class="quote-author" id="random-author">— Dee Lestari, Perempuan Keumala</p>
+      <button onclick="randomQuote()" style="margin-top:1.25rem;background:none;border:none;color:var(--pink-deep);font-size:0.85rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.4rem;font-weight:600;">
+        <span class="material-icons-round" style="font-size:1rem;">refresh</span>
+        Kutipan lain
+      </button>
+    </div>
+
+    <div style="text-align:center;margin-top:1.5rem;">
+      <a href="pages/quotes.html" class="btn-secondary">
+        <span class="material-icons-round" style="font-size:1rem;">add</span>
+        Kirim Kutipanmu
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ====== REKOMENDASI PREVIEW ====== -->
+<div class="section fade-in">
+  <div class="section-header">
+    <p class="section-eyebrow">Pojok Rekomendasi</p>
+    <h2 class="section-title">Kurasi untuk <em>jiwamu</em></h2>
+    <p class="section-subtitle">Buku, film, dan playlist yang dipilih dengan hati.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="rec-card fade-in">
+      <div class="rec-card-header">
+        <span class="material-icons-round">menu_book</span>
+        <h4>Buku Bulan Ini</h4>
+      </div>
+      <div class="rec-card-body">
+        <div class="rec-item">
+          <span class="material-icons-round">bookmark</span>
+          <span>Supernova — Dee Lestari</span>
+        </div>
+        <div class="rec-item">
+          <span class="material-icons-round">bookmark</span>
+          <span>Pada Sebuah Kapal — Nh. Dini</span>
+        </div>
+        <div class="rec-item">
+          <span class="material-icons-round">bookmark</span>
+          <span>Milk and Honey — Rupi Kaur</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rec-card fade-in fade-in-delay">
+      <div class="rec-card-header" style="background:linear-gradient(135deg,#f7a0b8,#fae9d7);">
+        <span class="material-icons-round">movie</span>
+        <h4>Film Female-Led</h4>
+      </div>
+      <div class="rec-card-body">
+        <div class="rec-item">
+          <span class="material-icons-round">play_circle</span>
+          <span>Little Women (2019)</span>
+        </div>
+        <div class="rec-item">
+          <span class="material-icons-round">play_circle</span>
+          <span>Marlina Si Pembunuh (2017)</span>
+        </div>
+        <div class="rec-item">
+          <span class="material-icons-round">play_circle</span>
+          <span>Portrait of a Lady on Fire</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rec-card fade-in fade-in-delay-2">
+      <div class="rec-card-header" style="background:linear-gradient(135deg,#fbb6c4,#f7a0b8);">
+        <span class="material-icons-round">headphones</span>
+        <h4>Playlist Pilihan</h4>
+      </div>
+      <div class="rec-card-body">
+        <div class="rec-item">
+          <span class="material-icons-round">queue_music</span>
+          <span>Healing Hours — Lo-fi & Indie</span>
+        </div>
+        <div class="rec-item">
+          <span class="material-icons-round">queue_music</span>
+          <span>Strong Women Anthem</span>
+        </div>
+        <div class="rec-item">
+          <span class="material-icons-round">queue_music</span>
+          <span>Sunday Slow Morning</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:2rem;">
+    <a href="pages/recommendations.html" class="btn-primary">
+      Lihat Semua Rekomendasi
+    </a>
+  </div>
+</div>
+
+<!-- ====== FOOTER ====== -->
+<footer>
+  <div class="brand">Ruang Perempuan</div>
+  <p>Dibuat dengan rasa cinta — untuk semua perempuan yang sedang merasakan.</p>
+  <nav>
+    <a href="index.html">Beranda</a>
+    <a href="pages/letters.html">Kotak Surat</a>
+    <a href="pages/quotes.html">Sastra</a>
+    <a href="pages/recommendations.html">Rekomendasi</a>
+    <a href="pages/future-letter.html">Surat Masa Depan</a>
+  </nav>
+  <p style="opacity:0.4;font-size:0.75rem;margin-top:1rem;">© 2026 arrval_ · buka donasi gak si, buat yang buatnya huhu</p>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<script src="main.js"></script>
+<script>
+  const quotes = [
+    { text: "Aku percaya bahwa setiap perempuan yang berdiri di hadapan cermin dan berkata 'aku cukup', sedang melakukan revolusi terkecil yang paling bermakna.", author: "— Dee Lestari" },
+    { text: "Perempuan adalah puisi yang bergerak. Setiap langkahnya adalah bait, setiap napasnya adalah rima.", author: "— Nh. Dini" },
+    { text: "How you love yourself is how you teach others to love you.", author: "— Rupi Kaur, Milk and Honey" },
+    { text: "Aku tidak butuh izin siapa pun untuk menjadi diriku sendiri yang paling utuh.", author: "— Anonim" },
+    { text: "Kekuatan perempuan bukan pada suaranya yang keras, tapi pada pilihannya yang berani.", author: "— Rupi Kaur" },
+    { text: "Jangan takut menjadi terlalu banyak. Kamu tidak pernah terlalu banyak untuk orang yang tepat.", author: "— Anonim" },
+  ];
+
+  function randomQuote() {
+    const q = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById('random-quote').textContent = `"${q.text}"`;
+    document.getElementById('random-author').textContent = q.author;
+  }
+</script>
+</body>
+</html>
