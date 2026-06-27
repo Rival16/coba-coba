@@ -189,6 +189,19 @@
 <button id="music-btn" title="Toggle musik"><span class="material-icons-round">music_note</span></button>
 <div id="toast"></div>
 
+<!-- UPDATE INFO POPUP -->
+<div id="update-popup">
+  <div class="update-popup-icon"><span class="material-icons-round">campaign</span></div>
+  <div class="update-popup-body">
+    <span class="update-popup-date"></span>
+    <p class="update-popup-title"></p>
+    <p class="update-popup-message"></p>
+  </div>
+  <button class="update-popup-close" onclick="closeUpdatePopup()" title="Tutup">
+    <span class="material-icons-round" style="font-size:1rem;">close</span>
+  </button>
+</div>
+
 <nav class="navbar">
   <a href="../index.html" class="navbar-brand">Ruang Perempuan</a>
   <ul class="navbar-links">
@@ -217,7 +230,7 @@
     Surat untuk <em>dirimu di masa depan</em>
   </h1>
   <p class="section-subtitle fade-in fade-in-delay-2">
-    Tulis surat untuk dirimu sendiri — 3 bulan, 6 bulan, atau 1 tahun dari sekarang. Surat akan diingatkan lewat email yang kamu simpan.
+    Tulis surat untuk dirimu sendiri — 3 bulan, 6 bulan, 1 tahun dari sekarang, atau pilih tanggal sendiri (misal hari ulang tahunmu). Surat akan diingatkan lewat email yang kamu simpan.
   </p>
 </div>
 
@@ -284,7 +297,23 @@
             <button class="days-chip" data-days="180" onclick="selectDuration(this)">6 bulan</button>
             <button class="days-chip selected" data-days="365" onclick="selectDuration(this)">1 tahun</button>
             <button class="days-chip" data-days="730" onclick="selectDuration(this)">2 tahun</button>
+            <button class="days-chip" data-days="custom" id="custom-date-chip" onclick="selectDuration(this)">
+              <span class="material-icons-round" style="font-size:0.95rem;vertical-align:-2px;">event</span>
+              Tanggal lain
+            </button>
           </div>
+
+          <div class="custom-date-box" id="custom-date-box" style="display:none;">
+            <label class="form-label" style="font-size:0.8rem;margin-bottom:0.5rem;">
+              <span class="material-icons-round" style="font-size:1rem;">cake</span>
+              Pilih tanggal pengiriman (misal: hari ulang tahunmu)
+            </label>
+            <input type="date" id="custom-date-input" onchange="onCustomDateChange()" />
+            <p id="custom-date-error" style="display:none;font-size:0.75rem;color:#ef4444;margin-top:0.5rem;">
+              Pilih tanggal di masa depan ya, minimal besok.
+            </p>
+          </div>
+
           <p id="delivery-date-text" style="font-size:0.8rem;color:var(--text-muted);margin-top:0.75rem;display:flex;align-items:center;gap:0.35rem;">
             <span class="material-icons-round" style="font-size:0.9rem;">schedule_send</span>
             Surat akan dikirim pada: <strong id="delivery-date-label">—</strong>
@@ -428,22 +457,76 @@ const SUPABASE_URL = 'https://mfpsxmrnimqznnuoqpgy.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mcHN4bXJuaW1xem5udW9xcGd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NzYxOTUsImV4cCI6MjA5ODA1MjE5NX0.aynqU9qXjC8j8nsGuxGHzKheqe6YrLfGDVFdTVFMQMQ';
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let selectedDays = 365;
+let customDeliveryDate = null; // Date object jika user pilih "Tanggal lain"
 
 function selectDuration(btn) {
   document.querySelectorAll('.days-chip').forEach(c => c.classList.remove('selected'));
   btn.classList.add('selected');
-  selectedDays = parseInt(btn.dataset.days);
-  updateDeliveryDate();
+
+  const customBox = document.getElementById('custom-date-box');
+
+  if (btn.dataset.days === 'custom') {
+    customBox.style.display = 'block';
+    // Set batas minimal tanggal: besok
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const input = document.getElementById('custom-date-input');
+    input.min = tomorrow.toISOString().split('T')[0];
+    if (input.value) {
+      onCustomDateChange();
+    } else {
+      document.getElementById('delivery-date-label').textContent = 'Pilih tanggal di atas';
+    }
+  } else {
+    customBox.style.display = 'none';
+    customDeliveryDate = null;
+    selectedDays = parseInt(btn.dataset.days);
+    updateDeliveryDate();
+  }
+}
+
+function onCustomDateChange() {
+  const input = document.getElementById('custom-date-input');
+  const errorEl = document.getElementById('custom-date-error');
+  if (!input.value) return;
+
+  // Parse sebagai tanggal lokal (hindari pergeseran timezone dari parsing ISO biasa)
+  const [y, m, d] = input.value.split('-').map(Number);
+  const picked = new Date(y, m - 1, d, 9, 0, 0); // jam 09:00 di hari tersebut
+
+  const tomorrowStart = new Date();
+  tomorrowStart.setHours(0, 0, 0, 0);
+  tomorrowStart.setDate(tomorrowStart.getDate() + 1);
+
+  if (picked < tomorrowStart) {
+    errorEl.style.display = 'block';
+    document.getElementById('delivery-date-label').textContent = '—';
+    customDeliveryDate = null;
+    return;
+  }
+
+  errorEl.style.display = 'none';
+  customDeliveryDate = picked;
+  const label = picked.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('delivery-date-label').textContent = label;
+}
+
+// Mengembalikan objek Date pengiriman, baik dari durasi cepat maupun tanggal custom.
+function getDeliveryDate() {
+  if (customDeliveryDate) return customDeliveryDate;
+  const date = new Date();
+  date.setDate(date.getDate() + selectedDays);
+  return date;
 }
 
 function updateDeliveryDate() {
-  const date = new Date();
-  date.setDate(date.getDate() + selectedDays);
+  const date = getDeliveryDate();
   const label = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
   document.getElementById('delivery-date-label').textContent = label;
 }
 
 // Word count
+const textarea = document.getElementById('letter-body');
 textarea.addEventListener('input', () => {
   const words = textarea.value.trim().split(/\s+/).filter(w => w).length;
   document.getElementById('word-count').textContent = words;
@@ -479,8 +562,12 @@ function goToStep2() {
   if (!title) { showToast('Berikan judul untuk suratmu!', 'info'); return; }
   if (words < 20) { showToast('Tulis minimal 20 kata ya!', 'info'); return; }
 
-  const delivDate = new Date();
-  delivDate.setDate(delivDate.getDate() + selectedDays);
+  const customChipSelected = document.getElementById('custom-date-chip').classList.contains('selected');
+  if (customChipSelected && !customDeliveryDate) {
+    showToast('Pilih tanggal pengirimannya dulu ya!', 'event'); return;
+  }
+
+  const delivDate = getDeliveryDate();
 
   document.getElementById('summary-title').textContent = title;
   document.getElementById('summary-date').textContent = `Dikirim: ${delivDate.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' })}`;
@@ -499,8 +586,7 @@ async function saveLetter() {
 
   if (!email || !email.includes('@')) { showToast('Masukkan email yang valid!', 'info'); return; }
 
-  const delivDate = new Date();
-  delivDate.setDate(delivDate.getDate() + selectedDays);
+  const delivDate = getDeliveryDate();
 
   const { error } = await db.from('future_letters').insert({
     title,
@@ -530,6 +616,17 @@ function resetForm() {
   document.getElementById('letter-email').value = '';
   document.getElementById('word-count').textContent = '0';
   document.getElementById('word-progress').style.width = '0%';
+
+  // Reset pilihan durasi/tanggal kembali ke default (1 tahun)
+  customDeliveryDate = null;
+  document.getElementById('custom-date-input').value = '';
+  document.getElementById('custom-date-box').style.display = 'none';
+  document.getElementById('custom-date-error').style.display = 'none';
+  document.querySelectorAll('.days-chip').forEach(c => c.classList.remove('selected'));
+  const defaultChip = document.querySelector('.days-chip[data-days="365"]');
+  if (defaultChip) defaultChip.classList.add('selected');
+  selectedDays = 365;
+  updateDeliveryDate();
 
   document.getElementById('form-step3').style.display = 'none';
   document.getElementById('form-step1').style.display = 'block';

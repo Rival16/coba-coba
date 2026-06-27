@@ -279,12 +279,41 @@ function initLoader() {
 // ==============================
 // MUSIC PLAYER
 // ==============================
+// Daftar lagu untuk diputar secara acak setiap kali halaman dibuka.
+// Tambahkan file mp3 baru ke folder /assets lalu tulis nama filenya di sini.
+// User TIDAK bisa memilih lagu — pemilihan selalu acak otomatis oleh sistem.
+const MUSIC_PLAYLIST = [
+  "Nadin Amizah - Semua Aku Dirayakan.mp3",
+  "Bernaung - Feby Putri.mp3",
+  "Usik - Feby Putri.mp3",
+];
+
+// Path audio dibuat relatif terhadap halaman yang sedang dibuka.
+// Halaman di root (index.html) pakai "assets/", halaman di /pages/ pakai "../assets/".
+function getAssetsPrefix() {
+  const onPagesFolder = window.location.pathname.includes("/pages/");
+  return onPagesFolder ? "../assets/" : "assets/";
+}
+
+function pickRandomTrack() {
+  const idx = Math.floor(Math.random() * MUSIC_PLAYLIST.length);
+  return MUSIC_PLAYLIST[idx];
+}
+
 let audio = null;
 let isPlaying = true;
 
 function tryPlayMusic() {
   audio = document.getElementById("bg-music");
   if (!audio) return;
+
+  // Pilih satu lagu secara acak dari playlist setiap kali halaman dimuat.
+  const track = pickRandomTrack();
+  const src = getAssetsPrefix() + encodeURIComponent(track);
+
+  // Pasang source baru lewat elemen <source> agar tetap rapi.
+  audio.innerHTML = `<source src="${src}" type="audio/mpeg" />`;
+  audio.load();
 
   audio.preload = "auto";
   audio.volume = 0.35;
@@ -396,6 +425,66 @@ function showToast(msg, icon = "favorite") {
 }
 
 // ==============================
+// UPDATE INFO POPUP (pengumuman fitur terbaru)
+// ==============================
+// Tambahkan pengumuman baru di paling atas array ini.
+// "id" harus unik — dipakai untuk mengingat update mana yang sudah pernah dilihat/ditutup user.
+const SITE_UPDATES = [
+  {
+    id: "update-2026-06-tanggal-custom",
+    date: "27 Juni 2026",
+    title: "Sekarang bisa pilih tanggal sendiri!",
+    message:
+      "Di halaman Surat Masa Depan, kamu sekarang bisa memilih tanggal pengiriman sendiri — cocok buat dikirim pas hari ulang tahun atau momen spesial lainnya.",
+  },
+  // {
+  //   id: "update-id-unik-lainnya",
+  //   date: "tanggal",
+  //   title: "Judul update",
+  //   message: "Deskripsi singkat update.",
+  // },
+];
+
+const UPDATE_SEEN_KEY = "rp_seen_updates";
+
+function getLatestUnseenUpdate() {
+  const seen = getStorage(UPDATE_SEEN_KEY, []);
+  return SITE_UPDATES.find((u) => !seen.includes(u.id)) || null;
+}
+
+function markUpdateSeen(id) {
+  const seen = getStorage(UPDATE_SEEN_KEY, []);
+  if (!seen.includes(id)) {
+    seen.push(id);
+    setStorage(UPDATE_SEEN_KEY, seen);
+  }
+}
+
+function showUpdatePopup() {
+  const popup = document.getElementById("update-popup");
+  if (!popup) return;
+
+  const update = getLatestUnseenUpdate();
+  if (!update) return;
+
+  popup.dataset.updateId = update.id;
+  popup.querySelector(".update-popup-date").textContent = update.date;
+  popup.querySelector(".update-popup-title").textContent = update.title;
+  popup.querySelector(".update-popup-message").textContent = update.message;
+
+  // Tunggu sampai loading screen selesai (lihat initLoader: ~2.8s) baru tampil.
+  setTimeout(() => popup.classList.add("show"), 3300);
+}
+
+function closeUpdatePopup() {
+  const popup = document.getElementById("update-popup");
+  if (!popup) return;
+  const id = popup.dataset.updateId;
+  if (id) markUpdateSeen(id);
+  popup.classList.remove("show");
+}
+
+// ==============================
 // MODAL
 // ==============================
 function openModal(id) {
@@ -482,6 +571,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initMobileNav();
   setActiveNav();
   initFadeIn();
+  showUpdatePopup();
 
   const musicBtn = document.getElementById("music-btn");
   if (musicBtn) musicBtn.addEventListener("click", toggleMusic);

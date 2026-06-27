@@ -864,3 +864,102 @@ footer nav a:hover { color: var(--pink-soft); }
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ========== CUSTOM DATE PICKER (Surat Masa Depan) ========== */
+.custom-date-box {
+  border: 2px solid var(--pink-light);
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-top: 0.75rem;
+  background: var(--cream);
+}
+.custom-date-box input[type="date"] {
+  width: 100%;
+  border: 1px solid var(--pink-light);
+  border-radius: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  background: white;
+}
+.custom-date-box input[type="date"]:focus { outline: 2px solid var(--pink-rose); }
+
+/* ========== UPDATE INFO POPUP ========== */
+#update-popup {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translate(-50%, 120%);
+  width: min(380px, calc(100vw - 2rem));
+  background: white;
+  border: 1px solid var(--pink-light);
+  border-radius: 1.25rem;
+  padding: 1.1rem 1.25rem;
+  box-shadow: 0 10px 40px rgba(58,42,47,0.18);
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  z-index: 60;
+}
+#update-popup.show {
+  transform: translate(-50%, 0);
+  opacity: 1;
+}
+#update-popup .update-popup-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--pink-light);
+  color: var(--pink-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+#update-popup .update-popup-body { flex: 1; min-width: 0; }
+#update-popup .update-popup-date {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--pink-rose);
+  margin-bottom: 0.2rem;
+  display: block;
+}
+#update-popup .update-popup-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.3rem;
+}
+#update-popup .update-popup-message {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+#update-popup .update-popup-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+#update-popup .update-popup-close:hover { background: var(--pink-light); color: var(--pink-deep); }
+
+@media (max-width: 768px) {
+  #update-popup {
+    bottom: 1rem;
+    width: calc(100vw - 1.5rem);
+  }
+}
