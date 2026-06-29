@@ -2,7 +2,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 // Ganti ke alamat domain yang SUDAH terverifikasi di Resend.
 // Selama domain belum diverifikasi, pakai 'onboarding@resend.dev' untuk testing.
-const FROM_EMAIL = 'Ruang Perempuan <rivalfikria@gmail.com>'
+const FROM_EMAIL = 'Ruang Perempuan <onboarding@resend.dev>'
 
 Deno.serve(async () => {
   const supabase = createClient(
