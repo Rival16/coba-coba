@@ -431,11 +431,13 @@ function showToast(msg, icon = "favorite") {
 // "id" harus unik — dipakai untuk mengingat update mana yang sudah pernah dilihat/ditutup user.
 const SITE_UPDATES = [
   {
-    id: "update-2026-06-tanggal-custom",
-    date: "27 Juni 2026",
-    title: "Sekarang bisa pilih tanggal sendiri!",
-    message:
-      "Di halaman Surat Masa Depan, kamu sekarang bisa memilih tanggal pengiriman sendiri — cocok buat dikirim pas hari ulang tahun atau momen spesial lainnya.",
+  id: "update-2026-06-kendala-pengiriman",
+  date: "29 Juni 2026",
+  title: "Info penting soal Surat Masa Depan 📮",
+  message:
+    "Karena keterbatasan biaya operasional, pengiriman email Surat Masa Depan untuk sementara masih dalam tahap uji coba dan mungkin belum bisa sampai ke semua alamat email. Kami sedang berusaha memperbaikinya secepat mungkin. Kalau kamu ingin membantu kami bertahan, donasi kecil sangat berarti 🤍",
+  donationUrl: "https://saweria.co/AhmadRivalFikri",
+  donationLabel: "Dukung lewat Saweria",
   },
   // {
   //   id: "update-id-unik-lainnya",
