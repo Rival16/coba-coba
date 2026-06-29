@@ -963,3 +963,68 @@ footer nav a:hover { color: var(--pink-soft); }
     width: calc(100vw - 1.5rem);
   }
 }
+
+/* ========== CLOCK BAR ========== */
+#clock-bar {
+  position: fixed;
+  top: 57px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(58, 42, 47, 0.50);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(30px);
+  border-radius: 0 0 12px 12px;
+  padding: 0.3rem 1rem 0.32rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.75);
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  pointer-events: none;
+  line-height: 1;
+}
+
+#clock-icon {
+  font-size: 0.8rem !important;
+  color: var(--pink-soft);
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}
+
+#clock-time {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  color: var(--pink-soft);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+#clock-sep {
+  opacity: 0.3;
+  line-height: 1;
+  font-size: 0.78rem;
+}
+
+#clock-date {
+  font-size: 0.76rem;
+  opacity: 0.65;
+  line-height: 1;
+  font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  #clock-bar {
+    top: 54px;
+    padding: 0.25rem 0.85rem 0.27rem;
+    font-size: 0.72rem;
+  }
+  #clock-time { font-size: 0.72rem; }
+  #clock-date { font-size: 0.7rem; }
+}

@@ -578,3 +578,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const musicBtn = document.getElementById("music-btn");
   if (musicBtn) musicBtn.addEventListener("click", toggleMusic);
 });
+
+// ========== DIGITAL CLOCK ==========
+(function initClock() {
+  const timeEl = document.getElementById('clock-time');
+  const dateEl = document.getElementById('clock-date');
+  const hariID = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+  const bulanID = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    if (timeEl) timeEl.textContent = `${h}:${m}:${s}`;
+    if (dateEl) {
+      const hari = hariID[now.getDay()];
+      const tgl = now.getDate();
+      const bln = bulanID[now.getMonth()];
+      dateEl.textContent = `${hari}, ${tgl} ${bln}`;
+    }
+  }
+
+  updateClock();
+  setInterval(updateClock, 1000);
+})();
