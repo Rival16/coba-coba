@@ -966,26 +966,24 @@ footer nav a:hover { color: var(--pink-soft); }
 
 /* ========== CLOCK BAR ========== */
 #clock-bar {
-  position: fixed;
-  top: 57px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 999;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  background: rgba(58, 42, 47, 0.50);
+  background: rgba(58, 42, 47, 0.78);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(30px);
-  border-radius: 0 0 12px 12px;
-  padding: 0.3rem 1rem 0.32rem;
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
   font-family: 'Inter', sans-serif;
   font-size: 0.78rem;
   color: rgba(255,255,255,0.75);
   letter-spacing: 0.02em;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
   pointer-events: none;
   line-height: 1;
+  white-space: nowrap;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 #clock-icon {
@@ -1021,15 +1019,16 @@ footer nav a:hover { color: var(--pink-soft); }
 
 @media (max-width: 768px) {
   #clock-bar {
-    font-size: 0.65rem;
-    padding: 0.22rem 0.6rem;
-    gap: 0.25rem;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap; /* ← ini kuncinya, paksa tetap 1 baris */
+    /* hapus position absolute di mobile, ikut navbar saja */
+    position: static;
+    transform: none;
+    font-size: 0.62rem;
+    padding: 0.2rem 0.55rem;
+    gap: 0.2rem;
+    white-space: nowrap;
+    margin: 0 auto;
   }
-  #clock-time { font-size: 0.65rem; letter-spacing: 0.03em; }
-  #clock-date { display: none; } /* tanggal disembunyikan di mobile */
-  #clock-icon { font-size: 0.7rem !important; }
+  #clock-time { font-size: 0.62rem; letter-spacing: 0.02em; }
+  #clock-date { display: none; }
+  #clock-icon { font-size: 0.65rem !important; }
 }
